@@ -4,6 +4,7 @@ import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.SyndFeedInput;
 import com.sun.syndication.io.XmlReader;
 import java.net.URL;
+import java.util.List;
 
 public class FileHandler {
 
@@ -20,7 +21,7 @@ public class FileHandler {
             SyndFeedInput input = new SyndFeedInput();
             feed = input.build(new XmlReader(feedUrl));
 
-            System.out.println(feed);
+            System.out.println(feed.getTitleEx());
 
             ok = true;
         }
@@ -36,6 +37,7 @@ public class FileHandler {
             System.out.println();
         }
 
-        return feed.getEntries().toString();
+
+        return feed.getEntries().get(4).toString();
     }
 }
