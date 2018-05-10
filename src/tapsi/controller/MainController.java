@@ -37,6 +37,8 @@ public class MainController implements Initializable {
 
     @FXML
     void btnDownloadOnActio(ActionEvent event) {
-        txtArea.setText(FileHandler.downloadFile());
+        FileHandler.downloadFile();
+
+        txtArea.setText(FileHandler.getEntries().toString());
     }
 }
