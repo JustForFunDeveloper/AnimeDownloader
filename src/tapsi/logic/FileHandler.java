@@ -6,7 +6,6 @@ import com.sun.syndication.io.XmlReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 
 public class FileHandler {
 
