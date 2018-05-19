@@ -7,6 +7,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import tapsi.logic.FeedHandler;
+import tapsi.logic.FileHandler;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -38,5 +39,6 @@ public class MainController implements Initializable {
     void btnDownloadOnAction() {
         FeedHandler.downloadFile();
         txtArea.setText(FeedHandler.getNewEpisodes().toString());
+        FileHandler.readFolders();
     }
 }
