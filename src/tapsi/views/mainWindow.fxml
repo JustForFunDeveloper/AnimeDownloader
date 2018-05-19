@@ -50,7 +50,7 @@
    <left>
       <VBox prefHeight="353.0" prefWidth="119.0" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" onAction="#btnDownloadOnActio" prefHeight="25.0" prefWidth="121.0" text="Download" />
+            <Button mnemonicParsing="false" onAction="#btnDownloadOnAction" prefHeight="25.0" prefWidth="121.0" text="Download" />
          </children>
          <BorderPane.margin>
             <Insets left="5.0" top="5.0" />
