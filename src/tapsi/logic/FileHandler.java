@@ -5,7 +5,6 @@ import com.sun.syndication.io.SyndFeedInput;
 import com.sun.syndication.io.XmlReader;
 
 import java.awt.*;
-import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +62,6 @@ public class FileHandler {
 //        URI myUri2 = URI.create(url2);
 //        openWebpage(myUri2);
 
-        //System.out.println(getItem("http://localhost:5555/gui/?token=chwQSn0NSXSlNHlALmMlW47Dn_ZjcyovgD-bWNfvOKc-YtV4gUrBfXA29FoAAAAA&list=1"));
     }
 
     private static void getName(String value) {
@@ -74,8 +72,8 @@ public class FileHandler {
         number = number.replace("- ", "");
         number = number.replace("[720p].mkv", "");
 
-        //System.out.println("Name: " + name);
-        //System.out.println("Number: " + number);
+        System.out.println("Name: " + name);
+        System.out.println("Number: " + number);
     }
 
     public static boolean openWebpage(URI uri) {
@@ -91,48 +89,4 @@ public class FileHandler {
         return false;
     }
 
-    public static String getItem(String item) {
-        String url = item;
-        String value = "";
-
-        URL obj = null;
-        try {
-            obj = new URL(url);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-
-        HttpURLConnection con = null;
-        try {
-            con = (HttpURLConnection) obj.openConnection();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            con.setRequestMethod("GET");
-        } catch (ProtocolException e) {
-            e.printStackTrace();
-        }
-        con.setRequestProperty("User-Agent", "Chrome/66.0.3359.139");
-
-        int responseCode = 0;
-        try {
-            responseCode = con.getResponseCode();
-
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(con.getInputStream()));
-            String inputLine;
-            StringBuffer response = new StringBuffer();
-
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-            in.close();
-            value = response.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return value;
-    }
 }
