@@ -80,7 +80,9 @@ public class FeedHandler {
             String url = entry.substring(position.getKey(), position.getValue());
             String magnetLink = safeUrlInList(url);
 
-            newEpisodes.add(new AnimeEntry(value.getKey(), value.getValue(), magnetLink));
+            AnimeEntry animeEntry = new AnimeEntry();
+            animeEntry.addNewAnimeEntry(value.getKey(), value.getValue(), magnetLink);
+            newEpisodes.add(animeEntry);
         }
         //openLink(newEpisodes.get(0).getMagnetUrl());
     }

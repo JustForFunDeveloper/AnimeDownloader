@@ -5,11 +5,21 @@ public class AnimeEntry {
     private String name;
     private String number;
     private String magnetUrl;
+    private String fileName;
 
-    public AnimeEntry(String name, String number, String magnetUrl) {
+    public AnimeEntry() {
+    }
+
+    public void addNewAnimeEntry(String name, String number, String magnetUrl) {
         this.name = name;
         this.number = number;
         this.magnetUrl = magnetUrl;
+    }
+
+    public void addAnimeEntry(String name, String number, String fileName) {
+        this.name = name;
+        this.number = number;
+        this.fileName = fileName;
     }
 
     public String getName() {
@@ -34,6 +44,14 @@ public class AnimeEntry {
 
     public void setMagnetUrl(String magnetUrl) {
         this.magnetUrl = magnetUrl;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     @Override
