@@ -29,7 +29,6 @@ class FileHandler {
             if (fileEntry.isDirectory()) {
                 listFilesForFolder(fileEntry);
             } else {
-                //System.out.println(fileEntry.getName());
                 addEntry(fileEntry.getName());
             }
         }

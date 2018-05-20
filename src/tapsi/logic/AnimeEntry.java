@@ -7,9 +7,6 @@ class AnimeEntry {
     private String magnetUrl;
     private String fileName;
 
-    protected AnimeEntry() {
-    }
-
     protected void addNewAnimeEntry(String name, String number, String magnetUrl) {
         this.name = name;
         this.number = number;

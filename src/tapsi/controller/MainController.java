@@ -8,11 +8,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import tapsi.logic.FeedHandler;
-import tapsi.logic.FileHandler;
+import tapsi.logic.DataInterface;
 
 import java.net.URL;
-import java.util.ListIterator;
 import java.util.ResourceBundle;
 
 public class MainController implements Initializable {
@@ -32,7 +30,6 @@ public class MainController implements Initializable {
     @FXML
     private ListView<String> listViewAnimeList;
 
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         setUpListFilter();
@@ -40,11 +37,7 @@ public class MainController implements Initializable {
 
     @FXML
     void btnDownloadOnAction() {
-        FeedHandler.downloadFile();
-        txtArea.setText(FeedHandler.getNewEpisodes().toString());
-        FileHandler.readFolders();
-
-        ObservableList<String> listViewItems = FXCollections.observableArrayList(FileHandler.getAnimeNames());
+        ObservableList<String> listViewItems = FXCollections.observableArrayList(DataInterface.getLocalAnimeNames());
         listViewAnimeList.setItems(listViewItems);
         lblListCount.setText(Integer.toString(listViewItems.size()));
     }
@@ -55,7 +48,7 @@ public class MainController implements Initializable {
      */
     private void setUpListFilter() {
         txtFieldSearch.textProperty().addListener(((observable, oldValue, newValue) -> {
-            ObservableList<String> listViewItems = FXCollections.observableArrayList(FileHandler.getAnimeNames());
+            ObservableList<String> listViewItems = FXCollections.observableArrayList();
             if (newValue == null || newValue.equals("")) {
                 listViewAnimeList.setItems(listViewItems);
             }
