@@ -49,8 +49,14 @@ class Anime {
         if (this.seasonCount != null && animeEntries != null && seasonCount > 0) {
             if (this.seasonCount == animeEntries.size())
                 animeStatus = AnimeStatus.FINISHED;
-            else if (this.seasonCount < animeEntries.size())
-                if (AnimeScope)
+            else if (this.seasonCount < animeEntries.size()) {
+                if (animeScope == AnimeScope.IGNORE)
+                    animeStatus = AnimeStatus.UNFINISHED;
+                else if (animeScope == AnimeScope.MUSTHAVE)
+                    animeStatus = AnimeStatus.ONAIR;
+                else if (animeScope == AnimeScope.NOTDEFINED)
+                    animeStatus = AnimeStatus.INFOMISSING;
+            }
         }
     }
 
