@@ -1,22 +1,22 @@
 package tapsi.logic;
 
-public class AnimeEntry {
+class AnimeEntry {
 
     private String name;
     private String number;
     private String magnetUrl;
     private String fileName;
 
-    public AnimeEntry() {
+    protected AnimeEntry() {
     }
 
-    public void addNewAnimeEntry(String name, String number, String magnetUrl) {
+    protected void addNewAnimeEntry(String name, String number, String magnetUrl) {
         this.name = name;
         this.number = number;
         this.magnetUrl = magnetUrl;
     }
 
-    public void addAnimeEntry(String name, String number, String fileName) {
+    protected void addAnimeEntry(String name, String number, String fileName) {
         this.name = name;
         this.number = number;
         this.fileName = fileName;

@@ -9,18 +9,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FileHandler {
+class FileHandler {
 
     private static String path = "D:\\Anime";
 
     private static Map<String, Anime> animeMap = new HashMap<>();
     private static List<String> animeNames = new ArrayList<>();
 
-    public static Map<String, Anime> getAnimeMap() {
+    protected static Map<String, Anime> getAnimeMap() {
         return animeMap;
     }
 
-    public static List<String> getAnimeNames() {
+    protected static List<String> getAnimeNames() {
         return animeNames;
     }
 

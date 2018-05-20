@@ -1,13 +1,19 @@
 package tapsi.logic;
 
+import com.sun.istack.internal.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class Anime {
+class Anime {
 
     private String name;
     private Integer localEpisodes;
     private List<AnimeEntry> animeEntries;
+    private Integer seasonCount = null;
+
+    private AnimeScope animeScope;
+    private AnimeStatus animeStatus;
 
     public String getName() {
         return name;
@@ -33,12 +39,45 @@ public class Anime {
         this.animeEntries = animeEntries;
     }
 
-    public Anime(String name) {
-        this.name = name;
-        this.animeEntries = new ArrayList<>();
+    @NotNull
+    public Integer getSeasonCount() {
+        return seasonCount;
     }
 
-    public void addAnimeEpisode (String number, String fileName) {
+    public void setSeasonCount(Integer seasonCount) {
+        this.seasonCount = seasonCount;
+        if (this.seasonCount != null && animeEntries != null && seasonCount > 0) {
+            if (this.seasonCount == animeEntries.size())
+                animeStatus = AnimeStatus.FINISHED;
+            else if (this.seasonCount < animeEntries.size())
+                if (AnimeScope)
+        }
+    }
+
+    public AnimeScope getAnimeScope() {
+        return animeScope;
+    }
+
+    public void setAnimeScope(AnimeScope animeScope) {
+        this.animeScope = animeScope;
+    }
+
+    public AnimeStatus getAnimeStatus() {
+        return animeStatus;
+    }
+
+    public void setAnimeStatus(AnimeStatus animeStatus) {
+        this.animeStatus = animeStatus;
+    }
+
+    protected Anime(String name) {
+        this.name = name;
+        this.animeEntries = new ArrayList<>();
+        this.animeScope = AnimeScope.NOTDEFINED;
+        this.animeStatus = AnimeStatus.INFOMISSING;
+    }
+
+    protected void addAnimeEpisode (String number, String fileName) {
         AnimeEntry entry = new AnimeEntry();
         entry.addAnimeEntry(name, number, fileName);
         animeEntries.add(entry);

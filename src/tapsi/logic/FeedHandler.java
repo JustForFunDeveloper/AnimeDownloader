@@ -11,31 +11,14 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FeedHandler {
+class FeedHandler {
 
     private static final String TITLE = "SyndEntryImpl.title";
     private static final String MAGNETURL = "SyndEntryImpl.link";
 
-    private static List<AnimeEntry> newEpisodes = new ArrayList<>();
+    //private static String path = "http://horriblesubs.info/rss.php?res=720";
 
-    private static String path = "http://horriblesubs.info/rss.php?res=720";
-    private static List<Object> entries;
-
-    public static List<AnimeEntry> getNewEpisodes() {
-        if (newEpisodes.size() > 0)
-            return newEpisodes;
-        else return null;
-    }
-
-    public static String getPath() {
-        return path;
-    }
-
-    public static void setPath(String path) {
-        FeedHandler.path = path;
-    }
-
-    public static boolean openLink(String url) {
+    protected static boolean openLink(String url) {
         URI uri = URI.create(url);
         Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
         if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
@@ -49,7 +32,8 @@ public class FeedHandler {
         return false;
     }
 
-    public static void downloadFile() {
+    protected static List<AnimeEntry> downloadFile(String path) {
+        List<Object> entries = new ArrayList<>();
         System.setProperty("http.agent", "Chrome");
         SyndFeed feed = null;
         try {
@@ -60,15 +44,15 @@ public class FeedHandler {
             ex.printStackTrace();
             System.out.println("ERROR: " + ex.getMessage());
         }
-        entries = new ArrayList<>();
 
         if (feed.getEntries() != null && feed.getEntries().size() >0 ) {
             entries = feed.getEntries();
         }
-        createAnimeListFromFeed();
+        return createAnimeListFromFeed(entries);
     }
 
-    private static void createAnimeListFromFeed() {
+    private static List<AnimeEntry> createAnimeListFromFeed(List<Object> entries) {
+        List<AnimeEntry> newEpisodes = new ArrayList<>();
         for (Object entry1 : entries) {
             String entry = entry1.toString();
 
@@ -84,6 +68,7 @@ public class FeedHandler {
             animeEntry.addNewAnimeEntry(value.getKey(), value.getValue(), magnetLink);
             newEpisodes.add(animeEntry);
         }
+        return newEpisodes;
         //openLink(newEpisodes.get(0).getMagnetUrl());
     }
 
