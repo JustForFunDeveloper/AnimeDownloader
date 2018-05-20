@@ -37,9 +37,9 @@ public class MainController implements Initializable {
 
     @FXML
     void btnDownloadOnAction() {
-        ObservableList<String> listViewItems = FXCollections.observableArrayList(DataInterface.getLocalAnimeNames());
-        listViewAnimeList.setItems(listViewItems);
-        lblListCount.setText(Integer.toString(listViewItems.size()));
+        //ObservableList<String> listViewItems = FXCollections.observableArrayList(DataInterface.getLocalAnimeNames());
+        //listViewAnimeList.setItems(listViewItems);
+        //lblListCount.setText(Integer.toString(listViewItems.size()));
     }
 
     /**
