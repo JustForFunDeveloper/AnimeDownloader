@@ -45,7 +45,8 @@ class FileHandler {
 
         if (animeMap.containsKey(value.getKey())) {
             Anime anime= animeMap.get(value.getKey());
-            anime.addAnimeEpisode(value.getValue(), name);
+            if (!anime.containsAnimeEntryByFileName(name))
+                anime.addAnimeEpisode(value.getValue(), name);
         } else {
             Anime anime = new Anime(value.getKey());
             anime.addAnimeEpisode(value.getValue(), name);
@@ -59,12 +60,18 @@ class FileHandler {
         String name = value.replace("[HorribleSubs] ", "");
         String number = name;
         int before = name.length();
-        name = name.replaceAll(" - [0-9]*.* \\[[0-9]*p].mkv", "");
+        name = name.replaceAll("- [0-9]#*.* \\[[0-9]*p].mkv", "");
         if (before == name.length())
             System.out.println(name);
         number = number.replace(name, "");
         number = number.replace("- ", "");
-        number = number.replace("[720p].mkv", "");
+        number = number.replaceAll(" \\[[0-9]*p].mkv", "");
+
+        if (number.contains(".")) {
+            number = number.substring(0,number.indexOf("."));
+        } else if (number.contains("v")) {
+            number = number.substring(0, number.indexOf("v"));
+        }
 
         return new Pair<>(name, number);
     }

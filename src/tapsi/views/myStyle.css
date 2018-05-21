@@ -2,15 +2,20 @@
     -fx-base: rgb(50, 50, 50);
     -fx-background: rgb(50, 50, 50);
     -fx-control-inner-background:  rgb(50, 50, 50);
+
+    /* Remove the focus color of all controls and views*/
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
 }
 
 .button {
-    -fx-background-color: transparent;
 }
 
 .button:hover {
-    -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
-    -fx-color: -fx-hover-base;
+}
+
+.list-view {
+    -fx-background-color: transparent;
 }
 
 .table-view {

@@ -2,10 +2,13 @@ package tapsi.logic;
 
 import java.util.List;
 
+//TODO: Finish comments
+
 /**
  * {@link DataInterface} handles all access from the views to the logic
  */
 public interface DataInterface {
+
     /**
      * Gets the names of all local stored Animes
      *
@@ -59,5 +62,27 @@ public interface DataInterface {
      */
     static List<String> getFeedAnimes() {
         return DataHandler.getFeedAnimes();
+    }
+
+    static void setAnimeData (Anime anime) {
+        DataHandler.setAnimeData(anime);
+    }
+
+    /**
+     * Returns the Anime with the given anime
+     *
+     * @param anime Name of the anime
+     * @return (@Link Anime) returns the anime with the selected name
+     */
+    static Anime getAnimeByName(String anime) {
+        return DataHandler.getAnimeByName(anime);
+    }
+
+    static List<String> toStringListWithNumber (List<AnimeEntry> animeEntries) {
+        return DataHandler.toStringListWithNumber(animeEntries);
+    }
+
+    static void closeApplication () {
+        DataHandler.closeApplication();
     }
 }

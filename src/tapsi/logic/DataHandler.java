@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+//TODO: Finish comments and implement loading from db at startup
+//TODO: Implement Statistics
+
 public class DataHandler {
 
     private static String path1 = "http://horriblesubs.info/rss.php?res=720";
@@ -13,6 +16,8 @@ public class DataHandler {
     private static List<String> animeNames = new ArrayList<>();
     
     private static List<AnimeEntry> animeEntries = new ArrayList<>();
+
+    private static DBHandler dbHandler = new DBHandler();
 
     protected static List<String> getLocalAnimeNames() {
         updateData();
@@ -37,17 +42,37 @@ public class DataHandler {
         return toStringList(animeEntries);
     }
 
-    private static void updateData() {
-        FileHandler.readFolders();
-        animeMap = FileHandler.getAnimeMap();
-        animeNames = FileHandler.getAnimeNames();
+    protected static Anime getAnimeByName (String anime) {
+        return animeMap.get(anime);
+    }
+
+    protected static void setAnimeData (Anime anime) {
+        dbHandler.insertClient(anime.getName(),anime.getAnimeScope().toString(), anime.getAnimeStatus().toString(), anime.getSeasonCount());
     }
     
-    private static List<String> toStringList(List<AnimeEntry> animeEntries) {
+    protected static List<String> toStringList(List<AnimeEntry> animeEntries) {
         List<String> animeEntriesList = new ArrayList<>();
         for (AnimeEntry animeEntry : animeEntries) {
             animeEntriesList.add(animeEntry.getName());
         }
         return animeEntriesList;
+    }
+
+    protected static List<String> toStringListWithNumber(List<AnimeEntry> animeEntries) {
+        List<String> animeEntriesList = new ArrayList<>();
+        for (AnimeEntry animeEntry : animeEntries) {
+            animeEntriesList.add(animeEntry.getFileName());
+        }
+        return animeEntriesList;
+    }
+
+    protected static void closeApplication () {
+        dbHandler.closeDB();
+    }
+
+    private static void updateData() {
+        FileHandler.readFolders();
+        animeMap = FileHandler.getAnimeMap();
+        animeNames = FileHandler.getAnimeNames();
     }
 }

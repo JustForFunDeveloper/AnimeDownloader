@@ -1,6 +1,6 @@
 package tapsi.logic;
 
-class AnimeEntry {
+public class AnimeEntry {
 
     private String name;
     private String number;

@@ -5,7 +5,7 @@ import com.sun.istack.internal.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-class Anime {
+public class Anime {
 
     private String name;
     private Integer localEpisodes;
@@ -81,6 +81,7 @@ class Anime {
         this.animeEntries = new ArrayList<>();
         this.animeScope = AnimeScope.NOTDEFINED;
         this.animeStatus = AnimeStatus.INFOMISSING;
+        this.seasonCount = 0;
     }
 
     protected void addAnimeEpisode (String number, String fileName) {
@@ -90,7 +91,22 @@ class Anime {
         updateLocalEpisodes();
     }
 
+    protected boolean containsAnimeEntryByFileName (String fileName) {
+        for (AnimeEntry animeEntry : animeEntries) {
+            if (animeEntry.getFileName().equals(fileName))
+                return true;
+        }
+        return false;
+    }
+
     private void updateLocalEpisodes() {
         localEpisodes = animeEntries.size();
+    }
+
+    @Override
+    public String toString() {
+        return "Anime{" +
+                "animeEntries=" + animeEntries +
+                '}';
     }
 }

@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="javafx" name="AnimeDownloader">
+    <output-path>$PROJECT_DIR$/out/artifacts/AnimeDownloader</output-path>
+    <root id="root">
+      <element id="archive" name="AnimeDownloader.jar">
+        <element id="module-output" name="AnimeDownloader" />
+        <element id="library" level="project" name="sqlite-jdbc-3.20.0" />
+      </element>
+    </root>
+  </artifact>
+</component>

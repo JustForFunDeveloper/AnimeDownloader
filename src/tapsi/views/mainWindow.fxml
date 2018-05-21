@@ -10,23 +10,23 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="502.0" prefWidth="768.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tapsi.controller.MainController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="646.0" prefWidth="1001.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tapsi.controller.MainController">
    <top>
       <MenuBar BorderPane.alignment="CENTER">
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
-              <MenuItem mnemonicParsing="false" text="Close" />
+              <MenuItem mnemonicParsing="false" onAction="#menuFileCloseOnAction" text="Close" />
             </items>
           </Menu>
-          <Menu mnemonicParsing="false" text="Edit">
+          <Menu mnemonicParsing="false" text="Settings">
             <items>
-              <MenuItem mnemonicParsing="false" text="Delete" />
+              <MenuItem mnemonicParsing="false" onAction="#menuSettingsPathsOnAction" text="Paths Settings" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Help">
             <items>
-              <MenuItem mnemonicParsing="false" text="About" />
+              <MenuItem mnemonicParsing="false" onAction="#menuHelpAboutOnAction" text="About" />
             </items>
           </Menu>
         </menus>
@@ -41,16 +41,27 @@
                </HBox.margin>
             </Label>
             <Label fx:id="lblStatus" text="Label" />
+            <Label maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+            <ProgressBar fx:id="prgressBar" prefHeight="18.0" prefWidth="228.0" progress="0.0" />
          </children>
          <padding>
-            <Insets left="2.0" />
+            <Insets bottom="1.0" left="2.0" right="2.0" top="1.0" />
          </padding>
       </HBox>
    </bottom>
    <left>
-      <VBox prefHeight="353.0" prefWidth="119.0" BorderPane.alignment="CENTER">
+      <VBox prefHeight="599.0" prefWidth="186.0" spacing="10.0" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" onAction="#btnDownloadOnAction" prefHeight="25.0" prefWidth="121.0" text="Download" />
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#btnDownloadOnAction" prefHeight="30.0" text="Download Feed" />
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#btnUpdateOnAction" prefHeight="30.0" text="Update Local" />
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#btnDownloadUpdateOnAction" prefHeight="30.0" text="Download &amp; Update" />
+            <Separator prefWidth="200.0" />
+            <Label alignment="CENTER" maxWidth="1.7976931348623157E308" text="Anime to download">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Label>
+            <ListView fx:id="listViewDownloads" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
          </children>
          <BorderPane.margin>
             <Insets left="5.0" right="5.0" top="5.0" />
@@ -78,7 +89,7 @@
       </VBox>
    </right>
    <center>
-      <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+      <TabPane fx:id="tabPane" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
         <tabs>
           <Tab text="Feed List">
             <content>
@@ -88,17 +99,28 @@
                            <children>
                               <HBox alignment="CENTER" prefHeight="91.0" prefWidth="410.0" spacing="10.0" VBox.vgrow="NEVER">
                                  <children>
-                                    <VBox prefHeight="200.0" prefWidth="100.0" spacing="2.0" HBox.hgrow="SOMETIMES">
+                                    <VBox prefHeight="200.0" prefWidth="100.0" spacing="2.0" HBox.hgrow="ALWAYS">
                                        <children>
                                           <HBox prefHeight="100.0" prefWidth="200.0">
                                              <children>
-                                                <Label maxHeight="1.7976931348623157E308" text="Name:" HBox.hgrow="ALWAYS">
+                                                <Label maxHeight="1.7976931348623157E308" text="Filter:" HBox.hgrow="ALWAYS">
                                                    <font>
                                                       <Font name="System Bold" size="12.0" />
                                                    </font>
                                                 </Label>
                                                 <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
-                                                <Label maxHeight="1.7976931348623157E308" text="-" HBox.hgrow="ALWAYS">
+                                                <ChoiceBox fx:id="chBoxFeedFilter" maxHeight="1.7976931348623157E308" minWidth="0.0" />
+                                             </children>
+                                          </HBox>
+                                          <HBox prefHeight="100.0" prefWidth="200.0">
+                                             <children>
+                                                <Label maxHeight="1.7976931348623157E308" text="Episode:">
+                                                   <font>
+                                                      <Font name="System Bold" size="12.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+                                                <Label fx:id="lblFeedEpisode" maxHeight="1.7976931348623157E308" text="-">
                                                    <font>
                                                       <Font name="System Italic" size="12.0" />
                                                    </font>
@@ -107,28 +129,13 @@
                                           </HBox>
                                           <HBox prefHeight="100.0" prefWidth="200.0">
                                              <children>
-                                                <Label maxHeight="1.7976931348623157E308" text="Nr:">
+                                                <Label maxHeight="1.7976931348623157E308" text="Exists:">
                                                    <font>
                                                       <Font name="System Bold" size="12.0" />
                                                    </font>
                                                 </Label>
                                                 <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
-                                                <Label maxHeight="1.7976931348623157E308" text="-">
-                                                   <font>
-                                                      <Font name="System Italic" size="12.0" />
-                                                   </font>
-                                                </Label>
-                                             </children>
-                                          </HBox>
-                                          <HBox prefHeight="100.0" prefWidth="200.0">
-                                             <children>
-                                                <Label maxHeight="1.7976931348623157E308" text="Local:">
-                                                   <font>
-                                                      <Font name="System Bold" size="12.0" />
-                                                   </font>
-                                                </Label>
-                                                <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
-                                                <Label maxHeight="1.7976931348623157E308" text="-">
+                                                <Label fx:id="lblFeedExists" maxHeight="1.7976931348623157E308" text="-">
                                                    <font>
                                                       <Font name="System Italic" size="12.0" />
                                                    </font>
@@ -150,7 +157,7 @@
                                                    </font>
                                                 </Label>
                                                 <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
-                                                <Label maxHeight="1.7976931348623157E308" text="-">
+                                                <Label fx:id="lblFeedStatus" maxHeight="1.7976931348623157E308" text="-">
                                                    <font>
                                                       <Font name="System Italic" size="12.0" />
                                                    </font>
@@ -164,8 +171,8 @@
                                                       <Font name="System Bold" size="12.0" />
                                                    </font>
                                                 </Label>
-                                                <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
-                                                <ChoiceBox maxHeight="1.7976931348623157E308" prefHeight="28.0" prefWidth="100.0" HBox.hgrow="NEVER" />
+                                                <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+                                                <ChoiceBox fx:id="chBoxFeedScope" maxHeight="1.7976931348623157E308" minWidth="0.0" prefHeight="28.0" HBox.hgrow="ALWAYS" />
                                              </children>
                                           </HBox>
                                           <HBox prefHeight="100.0" prefWidth="200.0">
@@ -176,7 +183,7 @@
                                                    </font>
                                                 </Label>
                                                 <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
-                                                <TextField alignment="CENTER" maxHeight="1.7976931348623157E308" prefHeight="28.0" prefWidth="100.0" text="-" HBox.hgrow="NEVER" />
+                                                <Label fx:id="lblFeedSeason" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="-" />
                                              </children>
                                           </HBox>
                                        </children>
@@ -188,12 +195,12 @@
                                        <children>
                                           <HBox prefHeight="100.0" prefWidth="200.0">
                                              <children>
-                                                <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Add" HBox.hgrow="ALWAYS" />
+                                                <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#btnFeedAddOnAction" text="Add" HBox.hgrow="ALWAYS" />
                                              </children>
                                           </HBox>
                                           <HBox prefHeight="100.0" prefWidth="200.0">
                                              <children>
-                                                <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Delete" HBox.hgrow="ALWAYS" />
+                                                <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#btnFeedDeleteOnAction" text="Delete" HBox.hgrow="ALWAYS" />
                                              </children>
                                           </HBox>
                                        </children>
@@ -206,7 +213,7 @@
                                     <Insets left="2.0" right="2.0" />
                                  </VBox.margin>
                               </HBox>
-                              <ListView prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+                              <ListView fx:id="listViewFeed" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
                            </children>
                         </VBox>
                      </children></AnchorPane>
@@ -220,7 +227,7 @@
                            <children>
                               <HBox alignment="CENTER" prefHeight="91.0" prefWidth="410.0" spacing="10.0" VBox.vgrow="NEVER">
                                  <children>
-                                    <VBox prefHeight="200.0" prefWidth="100.0" spacing="2.0" HBox.hgrow="SOMETIMES">
+                                    <VBox prefHeight="200.0" prefWidth="100.0" spacing="2.0" HBox.hgrow="ALWAYS">
                                        <children>
                                           <HBox prefHeight="100.0" prefWidth="200.0">
                                              <children>
@@ -230,7 +237,7 @@
                                                    </font>
                                                 </Label>
                                                 <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
-                                                <Label maxHeight="1.7976931348623157E308" text="-" HBox.hgrow="ALWAYS">
+                                                <Label fx:id="lblAnimeName" maxHeight="1.7976931348623157E308" text="-" HBox.hgrow="ALWAYS">
                                                    <font>
                                                       <Font name="System Italic" size="12.0" />
                                                    </font></Label>
@@ -238,12 +245,12 @@
                                           </HBox>
                                           <HBox prefHeight="100.0" prefWidth="200.0">
                                              <children>
-                                                <Label maxHeight="1.7976931348623157E308" text="Episode:">
+                                                <Label maxHeight="1.7976931348623157E308" text="Episodes:">
                                                    <font>
                                                       <Font name="System Bold" size="12.0" />
                                                    </font></Label>
                                                 <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
-                                                <Label maxHeight="1.7976931348623157E308" text="-">
+                                                <Label fx:id="lblAnimeEpisodes" maxHeight="1.7976931348623157E308" text="-">
                                                    <font>
                                                       <Font name="System Italic" size="12.0" />
                                                    </font></Label>
@@ -256,7 +263,7 @@
                                                       <Font name="System Bold" size="12.0" />
                                                    </font></Label>
                                                 <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
-                                                <Label maxHeight="1.7976931348623157E308" text="-">
+                                                <Label fx:id="lblAnimeMissing" maxHeight="1.7976931348623157E308" text="-">
                                                    <font>
                                                       <Font name="System Italic" size="12.0" />
                                                    </font></Label>
@@ -276,7 +283,7 @@
                                                       <Font name="System Bold" size="12.0" />
                                                    </font></Label>
                                                 <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
-                                                <Label maxHeight="1.7976931348623157E308" text="-">
+                                                <Label fx:id="lblAnimeStatus" maxHeight="1.7976931348623157E308" text="-">
                                                    <font>
                                                       <Font name="System Italic" size="12.0" />
                                                    </font></Label>
@@ -289,7 +296,7 @@
                                                       <Font name="System Bold" size="12.0" />
                                                    </font></Label>
                                                 <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
-                                                <ChoiceBox maxHeight="1.7976931348623157E308" prefHeight="28.0" prefWidth="100.0" HBox.hgrow="NEVER" />
+                                                <ChoiceBox fx:id="chBoxAnimeScope" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="28.0" />
                                              </children>
                                           </HBox>
                                           <HBox prefHeight="100.0" prefWidth="200.0">
@@ -299,7 +306,7 @@
                                                       <Font name="System Bold" size="12.0" />
                                                    </font></Label>
                                                 <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
-                                                <TextField alignment="CENTER" maxHeight="1.7976931348623157E308" prefHeight="28.0" prefWidth="100.0" text="-" HBox.hgrow="NEVER" />
+                                                <TextField fx:id="txtFieldAnimeSeason" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="28.0" prefWidth="106.0" text="-" HBox.hgrow="NEVER" />
                                              </children>
                                           </HBox>
                                        </children>
@@ -311,12 +318,12 @@
                                        <children>
                                           <HBox prefHeight="100.0" prefWidth="200.0">
                                              <children>
-                                                <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Show in Explorer" HBox.hgrow="ALWAYS" />
+                                                <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#btnAnimeShowInExplorerOnAction" text="Show in Explorer" HBox.hgrow="ALWAYS" />
                                              </children>
                                           </HBox>
                                           <HBox prefHeight="100.0" prefWidth="200.0">
                                              <children>
-                                                <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Delete" HBox.hgrow="ALWAYS" />
+                                                <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#btnAnimeDeleteOnAction" text="Delete" HBox.hgrow="ALWAYS" />
                                              </children>
                                           </HBox>
                                        </children>
@@ -329,7 +336,7 @@
                                     <Insets left="2.0" right="2.0" />
                                  </VBox.margin>
                               </HBox>
-                              <ListView prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+                              <ListView fx:id="listViewAnime" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
                            </children>
                         </VBox>
                      </children>
