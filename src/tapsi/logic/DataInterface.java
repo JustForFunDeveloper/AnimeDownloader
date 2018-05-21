@@ -60,8 +60,8 @@ public interface DataInterface {
      *
      * @return List<String> returns the list of the feed
      */
-    static List<String> getFeedAnimes() {
-        return DataHandler.getFeedAnimes();
+    static List<String> getFeedAnimeNames() {
+        return DataHandler.getFeedAnimeNames();
     }
 
     static void setAnimeData (Anime anime) {
@@ -76,6 +76,10 @@ public interface DataInterface {
      */
     static Anime getAnimeByName(String anime) {
         return DataHandler.getAnimeByName(anime);
+    }
+
+    static AnimeEntry getFeedEntryByName (String entryName) {
+        return DataHandler.getFeedEntryByName(entryName);
     }
 
     static List<String> toStringListWithNumber (List<AnimeEntry> animeEntries) {

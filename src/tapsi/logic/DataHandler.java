@@ -36,7 +36,7 @@ public class DataHandler {
         return null;
     }
 
-    protected static List<String> getFeedAnimes() {
+    protected static List<String> getFeedAnimeNames() {
         List<AnimeEntry> animeEntries = FeedHandler.downloadFile(path1);
         DataHandler.animeEntries.addAll(animeEntries);
         return toStringList(animeEntries);
@@ -44,6 +44,14 @@ public class DataHandler {
 
     protected static Anime getAnimeByName (String anime) {
         return animeMap.get(anime);
+    }
+
+    protected static AnimeEntry getFeedEntryByName (String entryName) {
+        for (AnimeEntry entry : animeEntries) {
+            if (entry.getName().equals(entryName))
+                return entry;
+        }
+        return null;
     }
 
     protected static void setAnimeData (Anime anime) {

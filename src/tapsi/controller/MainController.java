@@ -87,6 +87,8 @@ public class MainController implements Initializable {
     private ObservableList<String> listViewAnimeListItems;
     private ObservableList<String> listViewFeedListItems;
     private Anime localAnimeDisplayed;
+    private Anime localFeedAnime;
+    private AnimeEntry localFeedEntry;
 
 
     @Override
@@ -120,7 +122,7 @@ public class MainController implements Initializable {
 
     @FXML
     void btnDownloadOnAction() {
-        List<String> localFeedList = DataInterface.getFeedAnimes();
+        List<String> localFeedList = DataInterface.getFeedAnimeNames();
         setListView(listViewFeed, localFeedList);
         listViewFeedListItems = FXCollections.observableArrayList(localFeedList);
     }
@@ -128,7 +130,7 @@ public class MainController implements Initializable {
     @FXML
     void btnUpdateOnAction() {
         List<String> localAnimeList = DataInterface.getLocalAnimeNames();
-        setListView(listViewAnimeList,localAnimeList);
+        setListView(listViewAnimeList, localAnimeList);
         listViewAnimeListItems = FXCollections.observableArrayList(localAnimeList);
         lblListCount.setText(Integer.toString(listViewAnimeList.getItems().size()));
         txtFieldSearch.setText("");
@@ -136,12 +138,12 @@ public class MainController implements Initializable {
 
     @FXML
     void btnDownloadUpdateOnAction() {
-        List<String> localFeedList = DataInterface.getFeedAnimes();
+        List<String> localFeedList = DataInterface.getFeedAnimeNames();
         setListView(listViewFeed, localFeedList);
         listViewFeedListItems = FXCollections.observableArrayList(localFeedList);
 
         List<String> localAnimeList = DataInterface.getLocalAnimeNames();
-        setListView(listViewAnimeList,localAnimeList);
+        setListView(listViewAnimeList, localAnimeList);
         listViewAnimeListItems = FXCollections.observableArrayList(localAnimeList);
         lblListCount.setText(Integer.toString(listViewAnimeList.getItems().size()));
         txtFieldSearch.setText("");
@@ -184,19 +186,24 @@ public class MainController implements Initializable {
         }));
     }
 
-    private void setListView (ListView<String> listView, List<String> list) {
+    private void setListView(ListView<String> listView, List<String> list) {
         ObservableList<String> listViewItems = FXCollections.observableArrayList(list);
         listView.setItems(listViewItems);
     }
 
     private void setupListViews() {
-        EventHandler<MouseEvent> mouseEventEventHandler = (MouseEvent event) -> {
-          handleAnimeListMouseClick(event);
+        EventHandler<MouseEvent> mouseEventEventHandlerAnime = (MouseEvent event) -> {
+            handleAnimeListMouseClick(event);
         };
-        listViewAnimeList.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEventEventHandler);
+        listViewAnimeList.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEventEventHandlerAnime);
+
+        EventHandler<MouseEvent> mouseEventEventHandler1Feed = (MouseEvent event) -> {
+            handleFeedListMouseClick(event);
+        };
+        listViewFeed.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEventEventHandler1Feed);
     }
 
-    private void handleAnimeListMouseClick (MouseEvent event) {
+    private void handleAnimeListMouseClick(MouseEvent event) {
         ListView<String> listView = (ListView<String>) event.getSource();
 
         if (event.getButton().equals(MouseButton.PRIMARY)) {
@@ -204,7 +211,15 @@ public class MainController implements Initializable {
         }
     }
 
-    private void setAnimeTab (String selectedAnime) {
+    private void handleFeedListMouseClick(MouseEvent event) {
+        ListView<String> listView = (ListView<String>) event.getSource();
+
+        if (event.getButton().equals(MouseButton.PRIMARY)) {
+            setFeedTab(listView.getSelectionModel().getSelectedItem());
+        }
+    }
+
+    private void setAnimeTab(String selectedAnime) {
         localAnimeDisplayed = DataInterface.getAnimeByName(selectedAnime);
         lblAnimeName.setText(localAnimeDisplayed.getName());
         ObservableList<String> listEpisodes = FXCollections.observableArrayList(DataInterface.toStringListWithNumber(localAnimeDisplayed.getAnimeEntries()));
@@ -224,7 +239,25 @@ public class MainController implements Initializable {
         //TODO: Missing value not implemented yet
     }
 
-    private void setUpChoiceBoxes () {
+    private void setFeedTab(String selectedFeed) {
+        localFeedEntry = DataInterface.getFeedEntryByName(selectedFeed);
+        localFeedAnime = DataInterface.getAnimeByName(selectedFeed);
+        if (localFeedAnime == null) {
+            lblFeedExists.setText("false");
+            lblFeedEpisode.setText(localFeedEntry.getNumber());
+            lblFeedStatus.setText("-");
+            lblFeedSeason.setText("-");
+            chBoxFeedScope.setValue(AnimeScope.NOTDEFINED.toString());
+        } else {
+            lblFeedExists.setText("true");
+            lblFeedEpisode.setText(localFeedEntry.getNumber());
+            lblFeedStatus.setText(localFeedAnime.getAnimeStatus().toString());
+            lblFeedSeason.setText(Integer.toString(localFeedAnime.getSeasonCount()));
+            chBoxFeedScope.setValue(localFeedAnime.getAnimeScope().toString());
+        }
+    }
+
+    private void setUpChoiceBoxes() {
         List<String> scopeItems = Stream.of(AnimeScope.values())
                 .map(AnimeScope::name)
                 .collect(Collectors.toList());
@@ -232,7 +265,7 @@ public class MainController implements Initializable {
         chBoxAnimeScope.setItems(itemsAnimeScope);
         chBoxAnimeScope.setValue(itemsAnimeScope.get(2));
 
-        ChangeListener changeListener = (observable, oldValue, newValue) -> {
+        ChangeListener changeListenerAnime = (observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (localAnimeDisplayed != null) {
                     localAnimeDisplayed.setAnimeScope(AnimeScope.valueOf(newValue.toString()));
@@ -242,12 +275,18 @@ public class MainController implements Initializable {
         };
 
         //TODO: Setup all other Changelisteners here for the ChoiceBoxes
-
-        chBoxAnimeScope.getSelectionModel().selectedItemProperty().addListener(changeListener);
+        chBoxAnimeScope.getSelectionModel().selectedItemProperty().addListener(changeListenerAnime);
 
         ObservableList<String> itemsFeedScope = FXCollections.observableArrayList(scopeItems);
         chBoxFeedScope.setItems(itemsFeedScope);
         chBoxFeedScope.setValue(itemsFeedScope.get(2));
+
+        ChangeListener changeListenerFeed = (observable, oldValue, newValue) -> {
+            if (newValue != null) {
+            }
+        };
+
+        chBoxFeedScope.getSelectionModel().selectedItemProperty().addListener(changeListenerFeed);
 
         ObservableList<String> itemsFeedFilter = FXCollections.observableArrayList("Scope IGNORE",
                 "Scope MUSTHAVE", "Scope NOTDEFINED", "Exists Local", "Status ONAIR", "Status UNFINISHED",
@@ -255,6 +294,14 @@ public class MainController implements Initializable {
 
         chBoxFeedFilter.setItems(itemsFeedFilter);
         chBoxFeedFilter.setValue(itemsFeedFilter.get(6));
+
+        ChangeListener changeListenerFeedFilter = ((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                //TODO: Filter through feed list
+            }
+        });
+
+        chBoxFeedFilter.getSelectionModel().selectedItemProperty().addListener(changeListenerFeedFilter);
     }
 
     //TODO: Setup the txtFieldChangeListener to here and check Status value then!
