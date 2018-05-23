@@ -66,7 +66,7 @@ public class DataHandler {
         String magnetUrl = "";
 
         for (AnimeEntry entry : feedEntries) {
-            if (entry.getFileName().equals(animeName))
+            if (entry.getName().equals(animeName))
                 magnetUrl = entry.getMagnetUrl();
         }
 

@@ -18,6 +18,8 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+//TODO: Check MenuHandling
+
 public class MainController implements Initializable {
 
     @FXML
