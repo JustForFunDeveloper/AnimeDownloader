@@ -2,6 +2,7 @@ package tapsi.logic;
 
 import com.sun.istack.internal.NotNull;
 
+import javax.swing.text.html.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,7 +77,7 @@ public class Anime {
         this.animeStatus = animeStatus;
     }
 
-    protected Anime(String name) {
+    public Anime(String name) {
         this.name = name;
         this.animeEntries = new ArrayList<>();
         this.animeScope = AnimeScope.NOTDEFINED;

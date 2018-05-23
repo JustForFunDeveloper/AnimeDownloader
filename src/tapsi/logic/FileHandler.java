@@ -34,7 +34,7 @@ class FileHandler {
         }
     }
 
-    public static void readFolders () {
+    protected static void readFolders () {
         final File folder = new File(path);
         listFilesForFolder(folder);
     }

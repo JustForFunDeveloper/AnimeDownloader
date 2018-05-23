@@ -15,7 +15,7 @@ public class DataHandler {
     private static Map<String, Anime> animeMap = new HashMap<>();
     private static List<String> animeNames = new ArrayList<>();
     
-    private static List<AnimeEntry> animeEntries = new ArrayList<>();
+    private static List<AnimeEntry> feedEntries = new ArrayList<>();
 
     private static DBHandler dbHandler = new DBHandler();
 
@@ -38,7 +38,7 @@ public class DataHandler {
 
     protected static List<String> getFeedAnimeNames() {
         List<AnimeEntry> animeEntries = FeedHandler.downloadFile(path1);
-        DataHandler.animeEntries.addAll(animeEntries);
+        DataHandler.feedEntries = new ArrayList<>(animeEntries);
         return toStringList(animeEntries);
     }
 
@@ -47,18 +47,50 @@ public class DataHandler {
     }
 
     protected static AnimeEntry getFeedEntryByName (String entryName) {
-        for (AnimeEntry entry : animeEntries) {
+        for (AnimeEntry entry : feedEntries) {
             if (entry.getName().equals(entryName))
                 return entry;
         }
         return null;
     }
 
+    protected static List<String> getAutomaticDownloadFeeds () {
+        List<String> returnValue = new ArrayList<>();
+
+        for (AnimeEntry entry : feedEntries) {
+            Anime anime  = getAnimeByName(entry.getName());
+            if (anime != null) {
+                if (anime.getAnimeScope().equals(AnimeScope.MUSTHAVE)) {
+                    returnValue.add(entry.getName());
+                }
+            }
+        }
+        return returnValue;
+    }
+
     protected static void setAnimeData (Anime anime) {
         dbHandler.insertClient(anime.getName(),anime.getAnimeScope().toString(), anime.getAnimeStatus().toString(), anime.getSeasonCount());
     }
+
+    private static void syncDatabaseData () {
+        List<Anime> dbAnime = dbHandler.readAllObjects();
+
+        if (dbAnime == null)
+            return;
+
+        for (Anime anime : dbAnime) {
+            Anime localAnime = getAnimeByName(anime.getName());
+            if (localAnime != null) {
+                localAnime.setAnimeScope(anime.getAnimeScope());
+                localAnime.setAnimeStatus(anime.getAnimeStatus());
+                localAnime.setSeasonCount(anime.getSeasonCount());
+            } else {
+                //TODO: delete DB Entry
+            }
+        }
+    }
     
-    protected static List<String> toStringList(List<AnimeEntry> animeEntries) {
+    private static List<String> toStringList(List<AnimeEntry> animeEntries) {
         List<String> animeEntriesList = new ArrayList<>();
         for (AnimeEntry animeEntry : animeEntries) {
             animeEntriesList.add(animeEntry.getName());
@@ -82,5 +114,6 @@ public class DataHandler {
         FileHandler.readFolders();
         animeMap = FileHandler.getAnimeMap();
         animeNames = FileHandler.getAnimeNames();
+        syncDatabaseData();
     }
 }

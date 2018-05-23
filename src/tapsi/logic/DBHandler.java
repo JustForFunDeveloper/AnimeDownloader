@@ -11,7 +11,7 @@ public class DBHandler {
     private Statement stmt = null;
 
 
-    public DBHandler() {
+    protected DBHandler() {
 
         // Connect to database or create if no existent
         try {
@@ -35,7 +35,7 @@ public class DBHandler {
         }
     }
 
-    public void insertClient(String name, String animeScope, String animeStatus, int seasonCount) {
+    protected void insertClient(String name, String animeScope, String animeStatus, int seasonCount) {
 
         boolean checkName = checkAnimeByName(name);
         //boolean checkName = checkClientByName(name);
@@ -54,7 +54,7 @@ public class DBHandler {
         }
     }
 
-    private void updateClient(String name, String animeScope, String animeStatus, int seasonCount) {
+    protected void updateClient(String name, String animeScope, String animeStatus, int seasonCount) {
         String sqlName = "update Anime set animeScope = '" + animeScope + "', animeStatus = '" + animeStatus + "', seasonCount = " + seasonCount + " where name = '" + name + "'";
         try {
             stmt.executeUpdate(sqlName);
@@ -63,7 +63,7 @@ public class DBHandler {
         }
     }
 
-    public boolean checkAnimeByName(String name) {
+    protected boolean checkAnimeByName(String name) {
         String sql = "select count(*) from Anime where name = '" + name + "'";
         try {
             ResultSet rs = stmt.executeQuery(sql);
@@ -83,9 +83,9 @@ public class DBHandler {
         return false;
     }
 
-    public List<Anime> readAllObjects() {
+    protected List<Anime> readAllObjects() {
         List<Anime> animes = new ArrayList<>();
-        String sql = "select * from Clients";
+        String sql = "select * from Anime";
         try {
             ResultSet rs = stmt.executeQuery(sql);
 
@@ -105,7 +105,7 @@ public class DBHandler {
         }
     }
 
-    public void closeDB() {
+    protected void closeDB() {
         try {
             stmt.close();
             c.close();

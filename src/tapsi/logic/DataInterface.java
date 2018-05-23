@@ -1,5 +1,6 @@
 package tapsi.logic;
 
+import java.util.ArrayList;
 import java.util.List;
 
 //TODO: Finish comments
@@ -64,10 +65,6 @@ public interface DataInterface {
         return DataHandler.getFeedAnimeNames();
     }
 
-    static void setAnimeData (Anime anime) {
-        DataHandler.setAnimeData(anime);
-    }
-
     /**
      * Returns the Anime with the given anime
      *
@@ -80,6 +77,15 @@ public interface DataInterface {
 
     static AnimeEntry getFeedEntryByName (String entryName) {
         return DataHandler.getFeedEntryByName(entryName);
+    }
+
+    static List<String> getAutomaticDownloadFeeds () {
+        //TODO: Test here is an issue
+        return DataHandler.getAutomaticDownloadFeeds();
+    }
+
+    static void setAnimeData (Anime anime) {
+        DataHandler.setAnimeData(anime);
     }
 
     static List<String> toStringListWithNumber (List<AnimeEntry> animeEntries) {
