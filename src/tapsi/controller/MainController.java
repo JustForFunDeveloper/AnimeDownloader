@@ -24,6 +24,9 @@ public class MainController implements Initializable {
     private ChoiceBox<String> chBoxFeedFilter;
 
     @FXML
+    private ChoiceBox<String> chBoxAnimeFilter;
+
+    @FXML
     private ProgressBar prgressBar;
 
     @FXML
@@ -99,12 +102,22 @@ public class MainController implements Initializable {
 
     @FXML
     void btnFeedAddOnAction() {
-
+        if (!listViewDownloads.getItems().contains(localFeedEntry.getName())) {
+            listViewDownloads.getItems().add(localFeedEntry.getName());
+            if (localFeedAnime == null) {
+                localFeedAnime = new Anime(localFeedEntry.getName());
+                DataInterface.addTempAnime(localFeedAnime);
+            }
+            localFeedAnime.setAnimeScope(AnimeScope.MUSTHAVE);
+            DataInterface.setAnimeData(localFeedAnime);
+            setFeedTab(localFeedEntry.getName());
+        }
     }
 
     @FXML
     void btnFeedDeleteOnAction() {
-
+        if (listViewDownloads.getItems().contains(localFeedEntry.getName()))
+            listViewDownloads.getItems().remove(localFeedEntry.getName());
     }
 
     @FXML
@@ -116,7 +129,8 @@ public class MainController implements Initializable {
 
     @FXML
     void btnAnimeDeleteOnAction() {
-
+        //TODO: Implement Delete Action for all Entrys local
+        //TODO: Update local after timeout (Thread?)
     }
 
     @FXML
@@ -126,6 +140,9 @@ public class MainController implements Initializable {
         listViewFeedListItems = FXCollections.observableArrayList(localFeedList);
         ObservableList<String> downloadItems = FXCollections.observableArrayList(DataInterface.getAutomaticDownloadFeeds());
         listViewDownloads.setItems(downloadItems);
+        setFeedTab(listViewFeedListItems.get(0));
+        listViewFeed.getSelectionModel().select(listViewFeedListItems.get(0));
+        listViewFeed.scrollTo(listViewFeedListItems.get(0));
     }
 
     @FXML
@@ -137,6 +154,9 @@ public class MainController implements Initializable {
         txtFieldSearch.setText("");
         ObservableList<String> downloadItems = FXCollections.observableArrayList(DataInterface.getAutomaticDownloadFeeds());
         listViewDownloads.setItems(downloadItems);
+        setAnimeTab(listViewAnimeListItems.get(0));
+        listViewAnimeList.getSelectionModel().select(listViewAnimeListItems.get(0));
+        listViewAnimeList.scrollTo(listViewAnimeListItems.get(0));
     }
 
     @FXML
@@ -153,6 +173,17 @@ public class MainController implements Initializable {
 
         ObservableList<String> downloadItems = FXCollections.observableArrayList(DataInterface.getAutomaticDownloadFeeds());
         listViewDownloads.setItems(downloadItems);
+
+        setFeedTab(listViewFeedListItems.get(0));
+        listViewFeed.getSelectionModel().select(listViewFeedListItems.get(0));
+        listViewFeed.scrollTo(listViewFeedListItems.get(0));
+    }
+
+    @FXML
+    void btnStartDownloadOnAction() {
+        for (String animeName : listViewDownloads.getItems()) {
+            DataInterface.startDownload(animeName);
+        }
     }
 
     @FXML
@@ -169,8 +200,6 @@ public class MainController implements Initializable {
     void menuHelpAboutOnAction() {
 
     }
-
-    //TODO: Create another TAB with Statistics and also Buttons to extend the localAnimeList Filter
 
     /**
      * Sets up the on edit listener for the txtFieldSearch which handles the listViewTagList.
@@ -198,10 +227,15 @@ public class MainController implements Initializable {
         };
         listViewAnimeList.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEventEventHandlerAnime);
 
-        EventHandler<MouseEvent> mouseEventEventHandler1Feed = (MouseEvent event) -> {
+        EventHandler<MouseEvent> mouseEventEventHandlerFeed = (MouseEvent event) -> {
             handleFeedListMouseClick(event);
         };
-        listViewFeed.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEventEventHandler1Feed);
+        listViewFeed.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEventEventHandlerFeed);
+
+        EventHandler<MouseEvent> mouseEventEventHandlerDownload = (MouseEvent event) -> {
+            handleDownloadListMouseClick(event);
+        };
+        listViewDownloads.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEventEventHandlerDownload);
     }
 
     private void setUpChoiceBoxes() {
@@ -257,7 +291,7 @@ public class MainController implements Initializable {
 
         ChangeListener changeListenerFeedFilter = ((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                ObservableList<String> list= getFilteredList(newValue.toString());
+                ObservableList<String> list = getFilteredList(newValue.toString(), DataInterface.getFeedAnimeNames());
                 listViewFeed.setItems(list);
                 lblFeedEpisode.setText("-");
                 lblFeedExists.setText("-");
@@ -268,9 +302,23 @@ public class MainController implements Initializable {
         });
 
         chBoxFeedFilter.getSelectionModel().selectedItemProperty().addListener(changeListenerFeedFilter);
+
+        ObservableList<String> itemsAnimeFilter = FXCollections.observableArrayList(itemsFeedFilter);
+        chBoxAnimeFilter.setItems(itemsAnimeFilter);
+        chBoxAnimeFilter.setValue(itemsAnimeFilter.get(0));
+
+        ChangeListener changeListenerAnimeFilter = ((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                ObservableList<String> list = getFilteredList(newValue.toString(), DataInterface.getLocalAnimeNames());
+                listViewAnimeList.setItems(list);
+                lblListCount.setText(Integer.toString(listViewAnimeList.getItems().size()));
+            }
+        });
+
+        chBoxAnimeFilter.getSelectionModel().selectedItemProperty().addListener(changeListenerAnimeFilter);
     }
 
-    private void setUpTxtFields () {
+    private void setUpTxtFields() {
         txtFieldAnimeSeason.textProperty().addListener(((observable, oldValue, newValue) -> {
             if (newValue != null || !newValue.equals(oldValue) || !newValue.equals("")) {
                 localAnimeDisplayed.setSeasonCount(Integer.valueOf(newValue));
@@ -285,11 +333,33 @@ public class MainController implements Initializable {
         listView.setItems(listViewItems);
     }
 
+    private void handleDownloadListMouseClick (MouseEvent event) {
+        ListView<String> listView = (ListView<String>) event.getSource();
+
+        if (event.getButton().equals(MouseButton.PRIMARY)) {
+            setFeedTab(listView.getSelectionModel().getSelectedItem());
+            if (listViewFeed.getItems().contains(listView.getSelectionModel().getSelectedItem())) {
+                listViewFeed.getSelectionModel().select(listView.getSelectionModel().getSelectedItem());
+                listViewFeed.scrollTo(listView.getSelectionModel().getSelectedItem());
+            }
+        }else if (event.getButton().equals(MouseButton.SECONDARY)) {
+            setAnimeTab(listView.getSelectionModel().getSelectedItem());
+            if (listViewAnimeList.getItems().contains(listView.getSelectionModel().getSelectedItem())) {
+                listViewAnimeList.getSelectionModel().select(listView.getSelectionModel().getSelectedItem());
+                listViewAnimeList.scrollTo(listView.getSelectionModel().getSelectedItem());
+            }
+        }
+    }
+
     private void handleAnimeListMouseClick(MouseEvent event) {
         ListView<String> listView = (ListView<String>) event.getSource();
 
         if (event.getButton().equals(MouseButton.PRIMARY)) {
             setAnimeTab(listView.getSelectionModel().getSelectedItem());
+            if(listViewDownloads.getItems().contains(listView.getSelectionModel().getSelectedItem())) {
+                listViewDownloads.getSelectionModel().select(listView.getSelectionModel().getSelectedItem());
+                listViewDownloads.scrollTo(listView.getSelectionModel().getSelectedItem());
+            }
         }
     }
 
@@ -298,6 +368,10 @@ public class MainController implements Initializable {
 
         if (event.getButton().equals(MouseButton.PRIMARY)) {
             setFeedTab(listView.getSelectionModel().getSelectedItem());
+            if(listViewDownloads.getItems().contains(listView.getSelectionModel().getSelectedItem())) {
+                listViewDownloads.getSelectionModel().select(listView.getSelectionModel().getSelectedItem());
+                listViewDownloads.scrollTo(listView.getSelectionModel().getSelectedItem());
+            }
         }
     }
 
@@ -340,16 +414,21 @@ public class MainController implements Initializable {
             lblFeedSeason.setText(Integer.toString(localFeedAnime.getSeasonCount()));
             chBoxFeedScope.setValue(localFeedAnime.getAnimeScope().toString());
         }
+        SingleSelectionModel<Tab> selectionModel = tabPane.getSelectionModel();
+        selectionModel.select(0);
     }
 
-    private ObservableList<String> getFilteredList (String newValue) {
+    private ObservableList<String> getFilteredList(String newValue, List<String> entries) {
         ObservableList<String> returnValue = FXCollections.observableArrayList();
-        List<String> entries = DataInterface.getFeedAnimeNames();
+        //List<String> entries = DataInterface.getFeedAnimeNames();
 
         for (String animeName : entries) {
             Anime anime = DataInterface.getAnimeByName(animeName);
             if (anime != null) {
                 switch (newValue) {
+                    case "ALL":
+                        returnValue.add(animeName);
+                        break;
                     case "Scope IGNORE":
                         if (anime.getAnimeScope().equals(AnimeScope.valueOf("IGNORE")))
                             returnValue.add(animeName);
@@ -383,7 +462,4 @@ public class MainController implements Initializable {
         }
         return returnValue;
     }
-
-    //TODO: Setup the txtFieldChangeListener to here and check Status value then!
-
 }

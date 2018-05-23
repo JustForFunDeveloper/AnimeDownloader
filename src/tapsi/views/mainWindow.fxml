@@ -56,12 +56,13 @@
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#btnUpdateOnAction" prefHeight="30.0" text="Update Local" />
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#btnDownloadUpdateOnAction" prefHeight="30.0" text="Download &amp; Update" />
             <Separator prefWidth="200.0" />
-            <Label alignment="CENTER" maxWidth="1.7976931348623157E308" text="Anime to download">
+            <Label alignment="CENTER" maxWidth="1.7976931348623157E308" text="Anime to Download">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font>
             </Label>
             <ListView fx:id="listViewDownloads" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+            <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#btnStartDownloadOnAction" prefHeight="30.0" text="Start Download" />
          </children>
          <BorderPane.margin>
             <Insets left="5.0" right="5.0" top="5.0" />
@@ -84,6 +85,7 @@
                   <Insets left="5.0" right="5.0" top="5.0" />
                </VBox.margin>
             </HBox>
+            <ChoiceBox fx:id="chBoxAnimeFilter" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="28.0" />
             <ListView fx:id="listViewAnimeList" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
          </children>
       </VBox>
@@ -195,12 +197,12 @@
                                        <children>
                                           <HBox prefHeight="100.0" prefWidth="200.0">
                                              <children>
-                                                <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#btnFeedAddOnAction" text="Add" HBox.hgrow="ALWAYS" />
+                                                <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#btnFeedAddOnAction" text="Add to Download" HBox.hgrow="ALWAYS" />
                                              </children>
                                           </HBox>
                                           <HBox prefHeight="100.0" prefWidth="200.0">
                                              <children>
-                                                <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#btnFeedDeleteOnAction" text="Delete" HBox.hgrow="ALWAYS" />
+                                                <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#btnFeedDeleteOnAction" text="Delete from Download" HBox.hgrow="ALWAYS" />
                                              </children>
                                           </HBox>
                                        </children>

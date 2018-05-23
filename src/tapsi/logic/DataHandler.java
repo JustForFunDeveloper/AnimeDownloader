@@ -5,11 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-//TODO: Finish comments and implement loading from db at startup
-//TODO: Implement Statistics
-
 public class DataHandler {
 
+    //TODO: Implement Path Input Handling perhpas Multiple paths!
     private static String path1 = "http://horriblesubs.info/rss.php?res=720";
 
     private static Map<String, Anime> animeMap = new HashMap<>();
@@ -22,18 +20,6 @@ public class DataHandler {
     protected static List<String> getLocalAnimeNames() {
         updateData();
         return animeNames;
-    }
-
-    protected static List<List<String>> getAnimeStatistics() {
-        return null;
-    }
-
-    protected static List<String> getAnimesWithScope(AnimeScope scope) {
-        return null;
-    }
-
-    protected static List<String> getAnimesWithStatus(AnimeStatus status) {
-        return null;
     }
 
     protected static List<String> getFeedAnimeNames() {
@@ -69,7 +55,34 @@ public class DataHandler {
     }
 
     protected static void setAnimeData (Anime anime) {
-        dbHandler.insertClient(anime.getName(),anime.getAnimeScope().toString(), anime.getAnimeStatus().toString(), anime.getSeasonCount());
+        dbHandler.insertAnime(anime.getName(),anime.getAnimeScope().toString(), anime.getAnimeStatus().toString(), anime.getSeasonCount());
+    }
+
+    protected static void addTempAnime (Anime anime) {
+        animeMap.put(anime.getName(), anime);
+    }
+
+    protected static void startDownload (String animeName) {
+        String magnetUrl = "";
+
+        for (AnimeEntry entry : feedEntries) {
+            if (entry.getFileName().equals(animeName))
+                magnetUrl = entry.getMagnetUrl();
+        }
+
+        FeedHandler.openLink(magnetUrl);
+    }
+
+    protected static List<String> toStringListWithNumber(List<AnimeEntry> animeEntries) {
+        List<String> animeEntriesList = new ArrayList<>();
+        for (AnimeEntry animeEntry : animeEntries) {
+            animeEntriesList.add(animeEntry.getFileName());
+        }
+        return animeEntriesList;
+    }
+
+    protected static void closeApplication () {
+        dbHandler.closeDB();
     }
 
     private static void syncDatabaseData () {
@@ -85,7 +98,7 @@ public class DataHandler {
                 localAnime.setAnimeStatus(anime.getAnimeStatus());
                 localAnime.setSeasonCount(anime.getSeasonCount());
             } else {
-                //TODO: delete DB Entry
+                dbHandler.deleteAnime(anime.getName());
             }
         }
     }
@@ -96,18 +109,6 @@ public class DataHandler {
             animeEntriesList.add(animeEntry.getName());
         }
         return animeEntriesList;
-    }
-
-    protected static List<String> toStringListWithNumber(List<AnimeEntry> animeEntries) {
-        List<String> animeEntriesList = new ArrayList<>();
-        for (AnimeEntry animeEntry : animeEntries) {
-            animeEntriesList.add(animeEntry.getFileName());
-        }
-        return animeEntriesList;
-    }
-
-    protected static void closeApplication () {
-        dbHandler.closeDB();
     }
 
     private static void updateData() {

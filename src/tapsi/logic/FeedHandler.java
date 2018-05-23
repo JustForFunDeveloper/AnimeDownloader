@@ -69,7 +69,6 @@ class FeedHandler {
             newEpisodes.add(animeEntry);
         }
         return newEpisodes;
-        //openLink(newEpisodes.get(0).getMagnetUrl());
     }
 
     @NotNull
@@ -93,6 +92,7 @@ class FeedHandler {
         String name = value.replace("SyndEntryImpl.title=[HorribleSubs] ", "");
         String number = name;
         name = name.replaceAll(" - [0-9][0-9]* \\[720p].mkv", "");
+        name = name.replaceAll("'","");
         number = number.replace(name, "");
         number = number.replace("- ", "");
         number = number.replace("[720p].mkv", "");

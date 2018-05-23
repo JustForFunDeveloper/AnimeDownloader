@@ -35,7 +35,7 @@ public class DBHandler {
         }
     }
 
-    protected void insertClient(String name, String animeScope, String animeStatus, int seasonCount) {
+    protected void insertAnime(String name, String animeScope, String animeStatus, int seasonCount) {
 
         boolean checkName = checkAnimeByName(name);
         //boolean checkName = checkClientByName(name);
@@ -51,6 +51,16 @@ public class DBHandler {
         } else {
             // If insert is not possible just try tp update the client
             updateClient(name, animeScope, animeStatus, seasonCount);
+        }
+    }
+
+    protected void deleteAnime(String name) {
+
+        String sql = "delete from Anime where " + " name = '" + name + "'";
+        try {
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 

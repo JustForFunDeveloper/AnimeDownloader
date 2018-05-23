@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import tapsi.logic.DataInterface;
 
+//TODO: Comments overall
 public class Main extends Application {
 
     @Override

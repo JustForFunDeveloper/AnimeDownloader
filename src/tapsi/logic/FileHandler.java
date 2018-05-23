@@ -11,7 +11,7 @@ import java.util.Map;
 
 class FileHandler {
 
-    private static String path = "C:\\Users\\atapp\\Downloads\\Privat";//"\\\\192.168.1.113\\Anime2"; //"D:\\Anime";
+    private static String path = "D:\\Anime"; // "C:\\Users\\atapp\\Downloads\\Privat"; "\\\\192.168.1.113\\Anime2"; //"D:\\Anime";
 
     private static Map<String, Anime> animeMap = new HashMap<>();
     private static List<String> animeNames = new ArrayList<>();
@@ -59,10 +59,8 @@ class FileHandler {
     private static Pair<String, String> safeNameNumberInList(String value) {
         String name = value.replace("[HorribleSubs] ", "");
         String number = name;
-        int before = name.length();
         name = name.replaceAll(" - [0-9]#*.* \\[[0-9]*p].mkv", "");
-        if (before == name.length())
-            System.out.println(name);
+        name = name.replaceAll("'","");
         number = number.replace(name, "");
         number = number.replace("- ", "");
         number = number.replaceAll(" \\[[0-9]*p].mkv", "");
