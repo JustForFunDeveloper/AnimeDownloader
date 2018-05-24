@@ -9,6 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 import tapsi.logic.*;
 
 import java.net.URL;
@@ -20,7 +21,7 @@ import java.util.stream.Stream;
 
 //TODO: Check MenuHandling
 
-public class MainController implements Initializable {
+public class MainController implements Initializable, ViewInterfaces.MainInterface {
 
     @FXML
     private ChoiceBox<String> chBoxFeedFilter;
@@ -88,18 +89,42 @@ public class MainController implements Initializable {
     @FXML
     private TabPane tabPane;
 
+    private Stage stage;
+
     private ObservableList<String> listViewAnimeListItems;
     private ObservableList<String> listViewFeedListItems;
     private Anime localAnimeDisplayed;
     private Anime localFeedAnime;
     private AnimeEntry localFeedEntry;
 
+    public void setStage (Stage stage) {
+        this.stage = stage;
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        ViewObserver.addMainListener(this);
+
         setUpAnimeListFilter();
         setupListViews();
         setUpChoiceBoxes();
         setUpTxtFields();
+    }
+
+    @Override
+    public void hideStage() {
+        stage.hide();
+    }
+
+    @Override
+    public void showStage() {
+        stage.show();
+    }
+
+    @Override
+    public void btnOkFromPathSettingsClicked(String localPath, String feedPath) {
+        System.out.println(localPath + "\n" + feedPath);
+        //TODO: Safe in database!
     }
 
     @FXML
@@ -195,7 +220,7 @@ public class MainController implements Initializable {
 
     @FXML
     void menuSettingsPathsOnAction() {
-
+        ViewObserver.showPathSettings();
     }
 
     @FXML
@@ -322,7 +347,7 @@ public class MainController implements Initializable {
 
     private void setUpTxtFields() {
         txtFieldAnimeSeason.textProperty().addListener(((observable, oldValue, newValue) -> {
-            if (newValue != null || !newValue.equals(oldValue) || !newValue.equals("")) {
+            if (newValue != null && !newValue.equals(oldValue) && !newValue.equals("") && localAnimeDisplayed != null) {
                 localAnimeDisplayed.setSeasonCount(Integer.valueOf(newValue));
                 DataInterface.setAnimeData(localAnimeDisplayed);
                 setAnimeTab(localAnimeDisplayed.getName());

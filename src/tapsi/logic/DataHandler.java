@@ -85,7 +85,7 @@ public class DataHandler {
         dbHandler.closeDB();
     }
 
-    private static void syncDatabaseData () {
+    protected static void syncDatabaseData () {
         List<Anime> dbAnime = dbHandler.readAllObjects();
 
         if (dbAnime == null)

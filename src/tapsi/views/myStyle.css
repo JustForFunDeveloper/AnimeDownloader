@@ -1,7 +1,7 @@
 .root {
     -fx-base: rgb(50, 50, 50);
     -fx-background: rgb(50, 50, 50);
-    -fx-control-inner-background:  rgb(50, 50, 50);
+    -fx-control-inner-background: rgb(50, 50, 50);
 
     /* Remove the focus color of all controls and views*/
     -fx-focus-color: transparent;
@@ -12,6 +12,10 @@
 }
 
 .button:hover {
+}
+
+.text-field {
+    -fx-background-color: rgb(40, 40, 40);
 }
 
 .list-view {
