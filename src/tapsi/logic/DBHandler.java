@@ -10,6 +10,7 @@ public class DBHandler {
     private Connection c = null;
     private Statement stmt = null;
 
+    //TODO Implement Table to save paths
 
     protected DBHandler() {
 

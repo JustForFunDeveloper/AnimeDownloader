@@ -29,6 +29,22 @@ public class Main extends Application {
                 DataInterface.closeApplication();
             }
         });
+
+        Parent pathRoot = FXMLLoader.load(getClass().getResource("views/pathSettings.fxml"));
+        Stage pathStage = new Stage();
+        Scene pathScene = new Scene(pathRoot);
+        pathScene.getStylesheets().add(Main.class.getResource("views/myStyle.css").toExternalForm());
+        pathStage.setScene(pathScene);
+        pathStage.getIcons().add(new Image(Main.class.getResourceAsStream("resources/icon.png")));
+        pathStage.show();
+
+        pathStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                // TODO: Do something here! Basically it should just cancel everything
+            }
+        });
+
     }
 
 
