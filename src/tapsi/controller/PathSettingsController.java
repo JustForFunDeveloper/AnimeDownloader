@@ -4,7 +4,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import org.apache.commons.validator.routines.UrlValidator;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -39,6 +41,16 @@ public class PathSettingsController implements Initializable, ViewInterfaces.Pat
 
     @FXML
     void btnOkOnAction() {
+        if (!checkValidLocalPath(txtFieldLocalPath.getText())) {
+            System.err.println("Wrong path!");
+            return;
+        }
+
+        if (!checkValidLink(txtFieldFeedPath.getText())) {
+            System.err.println("Wrong link!");
+            return;
+        }
+
         ViewObserver.btnOkFromPathSettingsClicked(txtFieldLocalPath.getText(), txtFieldFeedPath.getText());
         stage.close();
     }
@@ -46,6 +58,21 @@ public class PathSettingsController implements Initializable, ViewInterfaces.Pat
     @FXML
     void btnAbortOnAction() {
         stage.close();
+    }
+
+    private boolean checkValidLocalPath(String path) {
+        if (path.equals("") || path == null)
+            return false;
+        File file = new File(path);
+        if (!file.isDirectory())
+            return false;
+        else
+            return true;
+    }
+
+    private boolean checkValidLink(String link) {
+        UrlValidator urlValidator = new UrlValidator();
+        return urlValidator.isValid(link);
     }
 }
 

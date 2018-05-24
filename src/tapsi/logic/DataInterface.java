@@ -7,6 +7,10 @@ import java.util.List;
  */
 public interface DataInterface {
 
+    static void setPaths(String feedPath, String localPath) {
+        DataHandler.setPaths(feedPath, localPath);
+    }
+
     /**
      * Gets the names of all local stored Animes
      *

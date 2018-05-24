@@ -123,7 +123,7 @@ public class MainController implements Initializable, ViewInterfaces.MainInterfa
 
     @Override
     public void btnOkFromPathSettingsClicked(String localPath, String feedPath) {
-        System.out.println(localPath + "\n" + feedPath);
+        DataInterface.setPaths(feedPath, localPath);
         //TODO: Safe in database!
     }
 

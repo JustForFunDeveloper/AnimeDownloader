@@ -8,7 +8,8 @@ import java.util.Map;
 public class DataHandler {
 
     //TODO: Implement Path Input Handling perhpas Multiple paths!
-    private static String path1 = "http://horriblesubs.info/rss.php?res=720";
+    private static String feedPath = ""; // = "http://horriblesubs.info/rss.php?res=720";
+    private static String localPath = ""; // "D:\\Anime";
 
     private static Map<String, Anime> animeMap = new HashMap<>();
     private static List<String> animeNames = new ArrayList<>();
@@ -17,13 +18,20 @@ public class DataHandler {
 
     private static DBHandler dbHandler = new DBHandler();
 
+    protected static void setPaths(String feedPath, String localPath) {
+        DataHandler.feedPath = feedPath;
+        DataHandler.localPath = localPath;
+    }
+
     protected static List<String> getLocalAnimeNames() {
         updateData();
         return animeNames;
     }
 
     protected static List<String> getFeedAnimeNames() {
-        List<AnimeEntry> animeEntries = FeedHandler.downloadFile(path1);
+        if (feedPath.isEmpty())
+            return null;
+        List<AnimeEntry> animeEntries = FeedHandler.downloadFile(feedPath);
         DataHandler.feedEntries = new ArrayList<>(animeEntries);
         return toStringList(animeEntries);
     }
@@ -112,7 +120,9 @@ public class DataHandler {
     }
 
     private static void updateData() {
-        FileHandler.readFolders();
+        if (localPath.isEmpty())
+            return;
+        FileHandler.readFolders(localPath);
         animeMap = FileHandler.getAnimeMap();
         animeNames = FileHandler.getAnimeNames();
         syncDatabaseData();

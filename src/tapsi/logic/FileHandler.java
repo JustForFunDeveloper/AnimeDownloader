@@ -11,7 +11,7 @@ import java.util.Map;
 
 class FileHandler {
 
-    private static String path = "D:\\Anime"; // "C:\\Users\\atapp\\Downloads\\Privat"; "\\\\192.168.1.113\\Anime2"; //"D:\\Anime";
+    //private static String path = "D:\\Anime"; // "C:\\Users\\atapp\\Downloads\\Privat"; "\\\\192.168.1.113\\Anime2"; //"D:\\Anime";
 
     private static Map<String, Anime> animeMap = new HashMap<>();
     private static List<String> animeNames = new ArrayList<>();
@@ -34,7 +34,7 @@ class FileHandler {
         }
     }
 
-    protected static void readFolders () {
+    protected static void readFolders (String path) {
         final File folder = new File(path);
         listFilesForFolder(folder);
     }
