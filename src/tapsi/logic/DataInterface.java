@@ -7,8 +7,8 @@ import java.util.List;
  */
 public interface DataInterface {
 
-    static void setPaths(String feedPath, String localPath) {
-        DataHandler.setPaths(feedPath, localPath);
+    static List<String> getPaths() {
+        return DataHandler.getPaths();
     }
 
     /**
@@ -45,6 +45,10 @@ public interface DataInterface {
 
     static List<String> getAutomaticDownloadFeeds () {
         return DataHandler.getAutomaticDownloadFeeds();
+    }
+
+    static void setPaths(String feedPath, String localPath) {
+        DataHandler.setPaths(feedPath, localPath);
     }
 
     static void setAnimeData (Anime anime) {

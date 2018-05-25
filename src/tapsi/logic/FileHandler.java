@@ -64,6 +64,7 @@ class FileHandler {
         number = number.replace(name, "");
         number = number.replace("- ", "");
         number = number.replaceAll(" \\[[0-9]*p].mkv", "");
+        number = number.replaceAll("\\s","");
 
         if (number.contains(".")) {
             number = number.substring(0,number.indexOf("."));

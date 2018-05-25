@@ -5,9 +5,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.apache.commons.validator.routines.UrlValidator;
+import tapsi.logic.DataInterface;
 
 import java.io.File;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class PathSettingsController implements Initializable, ViewInterfaces.PathSettingsInterface {
@@ -27,6 +29,9 @@ public class PathSettingsController implements Initializable, ViewInterfaces.Pat
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         ViewObserver.addPathSettingsListener(this);
+        List<String> paths = DataInterface.getPaths();
+        txtFieldLocalPath.setText(paths.get(0));
+        txtFieldFeedPath.setText(paths.get(1));
     }
 
     @Override

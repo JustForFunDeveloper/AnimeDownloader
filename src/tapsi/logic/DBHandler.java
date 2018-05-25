@@ -10,8 +10,6 @@ public class DBHandler {
     private Connection c = null;
     private Statement stmt = null;
 
-    //TODO Implement Table to save paths
-
     protected DBHandler() {
 
         // Connect to database or create if no existent
@@ -34,12 +32,21 @@ public class DBHandler {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        try {
+            stmt = c.createStatement();
+            String sql = "create table if not exists Paths " +
+                    "(id INTEGER PRIMARY KEY UNIQUE, " +
+                    "path TEXT NOT NULL)";
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     protected void insertAnime(String name, String animeScope, String animeStatus, int seasonCount) {
 
         boolean checkName = checkAnimeByName(name);
-        //boolean checkName = checkClientByName(name);
 
         if (!checkName) {
             String sql = "insert into Anime(name, animeScope, animeStatus, seasonCount)" +
@@ -74,6 +81,33 @@ public class DBHandler {
         }
     }
 
+    protected void insertPath(Integer id, String path) {
+
+        boolean checkName = checkPathByID(id);
+
+        if (!checkName) {
+            String sql = "insert into Paths(id, path)" +
+                    " select " + id + ", '" + path + "'";
+            try {
+                stmt.executeUpdate(sql);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } else {
+            // If insert is not possible just try tp update the client
+            updatePath(id, path);
+        }
+    }
+
+    protected void updatePath(Integer id, String path) {
+        String sqlName = "update Paths set path = '" + path + "' where id = " + id ;
+        try {
+            stmt.executeUpdate(sqlName);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     protected boolean checkAnimeByName(String name) {
         String sql = "select count(*) from Anime where name = '" + name + "'";
         try {
@@ -86,6 +120,26 @@ public class DBHandler {
                 return true;
             else if (result != 0) {
                 System.out.println("Invalid Database! row:[name]");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    protected boolean checkPathByID(Integer number) {
+        String sql = "select count(*) from Paths where id = '" + number + "'";
+        try {
+            ResultSet rs = stmt.executeQuery(sql);
+            rs.next();
+            int result = rs.getInt(1);
+            rs.close();
+
+            if (result == 1)
+                return true;
+            else if (result != 0) {
+                System.out.println("Invalid Path Database!");
             }
 
         } catch (SQLException e) {
@@ -109,6 +163,24 @@ public class DBHandler {
             }
             rs.close();
             return animes;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    protected List<String> readAllPaths() {
+        List<String> paths = new ArrayList<>();
+        String sql = "select * from Paths";
+        try {
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                paths.add(rs.getString(2));
+            }
+            rs.close();
+            return paths;
 
         } catch (SQLException e) {
             e.printStackTrace();

@@ -96,6 +96,7 @@ class FeedHandler {
         number = number.replace(name, "");
         number = number.replace("- ", "");
         number = number.replace("[720p].mkv", "");
+        number = number.replaceAll("\\s","");
 
         return new Pair<>(name, number);
     }

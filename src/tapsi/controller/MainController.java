@@ -19,7 +19,8 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-//TODO: Check MenuHandling
+//TODO: Check ChoiceBoxFeed MUSTHAVE should add to download list!
+//TODO: Create a few more Filter Methods for the local implementation
 
 public class MainController implements Initializable, ViewInterfaces.MainInterface {
 
@@ -124,7 +125,6 @@ public class MainController implements Initializable, ViewInterfaces.MainInterfa
     @Override
     public void btnOkFromPathSettingsClicked(String localPath, String feedPath) {
         DataInterface.setPaths(feedPath, localPath);
-        //TODO: Safe in database!
     }
 
     @FXML

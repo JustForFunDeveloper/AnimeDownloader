@@ -7,20 +7,22 @@ import java.util.Map;
 
 public class DataHandler {
 
-    //TODO: Implement Path Input Handling perhpas Multiple paths!
     private static String feedPath = ""; // = "http://horriblesubs.info/rss.php?res=720";
     private static String localPath = ""; // "D:\\Anime";
 
     private static Map<String, Anime> animeMap = new HashMap<>();
     private static List<String> animeNames = new ArrayList<>();
-    
+
     private static List<AnimeEntry> feedEntries = new ArrayList<>();
 
     private static DBHandler dbHandler = new DBHandler();
 
-    protected static void setPaths(String feedPath, String localPath) {
-        DataHandler.feedPath = feedPath;
-        DataHandler.localPath = localPath;
+    protected static List<String> getPaths() {
+        List<String> paths = dbHandler.readAllPaths();
+        localPath = paths.get(0);
+        feedPath = paths.get(1);
+
+        return paths;
     }
 
     protected static List<String> getLocalAnimeNames() {
@@ -36,11 +38,11 @@ public class DataHandler {
         return toStringList(animeEntries);
     }
 
-    protected static Anime getAnimeByName (String anime) {
+    protected static Anime getAnimeByName(String anime) {
         return animeMap.get(anime);
     }
 
-    protected static AnimeEntry getFeedEntryByName (String entryName) {
+    protected static AnimeEntry getFeedEntryByName(String entryName) {
         for (AnimeEntry entry : feedEntries) {
             if (entry.getName().equals(entryName))
                 return entry;
@@ -48,29 +50,42 @@ public class DataHandler {
         return null;
     }
 
-    protected static List<String> getAutomaticDownloadFeeds () {
+    protected static List<String> getAutomaticDownloadFeeds() {
         List<String> returnValue = new ArrayList<>();
 
         for (AnimeEntry entry : feedEntries) {
-            Anime anime  = getAnimeByName(entry.getName());
+            Anime anime = getAnimeByName(entry.getName());
             if (anime != null) {
-                if (anime.getAnimeScope().equals(AnimeScope.MUSTHAVE)) {
-                    returnValue.add(entry.getName());
+                if (anime.getAnimeScope().equals(AnimeScope.MUSTHAVE) && !anime.getAnimeStatus().equals(AnimeStatus.FINISHED)) {
+                    boolean exists = false;
+                    for (AnimeEntry episode : anime.getAnimeEntries()) {
+                        if (episode.getNumber().equals(entry.getNumber()))
+                            exists = true;
+                    }
+                    if (!exists)
+                        returnValue.add(entry.getName());
                 }
             }
         }
         return returnValue;
     }
 
-    protected static void setAnimeData (Anime anime) {
-        dbHandler.insertAnime(anime.getName(),anime.getAnimeScope().toString(), anime.getAnimeStatus().toString(), anime.getSeasonCount());
+    protected static void setPaths(String feedPath, String localPath) {
+        DataHandler.localPath = localPath;
+        DataHandler.feedPath = feedPath;
+        dbHandler.insertPath(0, localPath);
+        dbHandler.insertPath(1, feedPath);
     }
 
-    protected static void addTempAnime (Anime anime) {
+    protected static void setAnimeData(Anime anime) {
+        dbHandler.insertAnime(anime.getName(), anime.getAnimeScope().toString(), anime.getAnimeStatus().toString(), anime.getSeasonCount());
+    }
+
+    protected static void addTempAnime(Anime anime) {
         animeMap.put(anime.getName(), anime);
     }
 
-    protected static void startDownload (String animeName) {
+    protected static void startDownload(String animeName) {
         String magnetUrl = "";
 
         for (AnimeEntry entry : feedEntries) {
@@ -89,11 +104,11 @@ public class DataHandler {
         return animeEntriesList;
     }
 
-    protected static void closeApplication () {
+    protected static void closeApplication() {
         dbHandler.closeDB();
     }
 
-    protected static void syncDatabaseData () {
+    protected static void syncDatabaseData() {
         List<Anime> dbAnime = dbHandler.readAllObjects();
 
         if (dbAnime == null)
@@ -110,7 +125,7 @@ public class DataHandler {
             }
         }
     }
-    
+
     private static List<String> toStringList(List<AnimeEntry> animeEntries) {
         List<String> animeEntriesList = new ArrayList<>();
         for (AnimeEntry animeEntry : animeEntries) {

@@ -2,7 +2,6 @@ package tapsi.logic;
 
 import com.sun.istack.internal.NotNull;
 
-import javax.swing.text.html.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,6 +45,10 @@ public class Anime {
     }
 
     public void setSeasonCount(Integer seasonCount) {
+        if(seasonCount.equals(0)) {
+            this.seasonCount = null;
+            animeStatus = AnimeStatus.INFOMISSING;
+        }
         this.seasonCount = seasonCount;
         if (this.seasonCount != null && animeEntries != null && seasonCount > 0) {
             if (this.seasonCount == animeEntries.size())
