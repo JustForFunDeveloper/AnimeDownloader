@@ -36,6 +36,7 @@ import java.util.stream.Stream;
 //TODO: Check ChoiceBoxFeed MUSTHAVE should add to download list!
 //TODO: Create a few more Filter Methods for the local implementation
 //TODO: Update doesn't update Anime when Anime wsa deleted before?
+//TODO: Look into multiple locationPaths
 
 public class MainController implements Initializable, ViewInterfaces.MainInterface {
 
