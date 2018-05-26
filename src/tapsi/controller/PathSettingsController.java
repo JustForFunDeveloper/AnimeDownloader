@@ -9,7 +9,6 @@ import tapsi.logic.DataInterface;
 
 import java.io.File;
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class PathSettingsController implements Initializable, ViewInterfaces.PathSettingsInterface {
