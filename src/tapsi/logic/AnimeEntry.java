@@ -6,17 +6,20 @@ public class AnimeEntry {
     private String number;
     private String magnetUrl;
     private String fileName;
+    private String path;
 
-    protected void addNewAnimeEntry(String name, String number, String magnetUrl) {
+    protected void addNewAnimeEntry(String name, String number, String magnetUrl, String path) {
         this.name = name;
         this.number = number;
         this.magnetUrl = magnetUrl;
+        this.path = path;
     }
 
-    protected void addAnimeEntry(String name, String number, String fileName) {
+    protected void addAnimeEntry(String name, String number, String fileName, String path) {
         this.name = name;
         this.number = number;
         this.fileName = fileName;
+        this.path = path;
     }
 
     public String getName() {
@@ -49,6 +52,18 @@ public class AnimeEntry {
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public String getFullPathName() {
+        return new String(path + "\\" + fileName);
     }
 
     @Override

@@ -88,9 +88,9 @@ public class Anime {
         this.seasonCount = 0;
     }
 
-    protected void addAnimeEpisode (String number, String fileName) {
+    protected void addAnimeEpisode (String number, String fileName, String localPath) {
         AnimeEntry entry = new AnimeEntry();
-        entry.addAnimeEntry(name, number, fileName);
+        entry.addAnimeEntry(name, number, fileName, localPath);
         animeEntries.add(entry);
         updateLocalEpisodes();
     }

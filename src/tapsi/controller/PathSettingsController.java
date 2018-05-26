@@ -29,9 +29,8 @@ public class PathSettingsController implements Initializable, ViewInterfaces.Pat
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         ViewObserver.addPathSettingsListener(this);
-        List<String> paths = DataInterface.getPaths();
-        txtFieldLocalPath.setText(paths.get(0));
-        txtFieldFeedPath.setText(paths.get(1));
+        txtFieldLocalPath.setText(DataInterface.getLocalPath());
+        txtFieldFeedPath.setText(DataInterface.getLocalPath());
     }
 
     @Override

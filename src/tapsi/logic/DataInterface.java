@@ -7,8 +7,16 @@ import java.util.List;
  */
 public interface DataInterface {
 
-    static List<String> getPaths() {
-        return DataHandler.getPaths();
+//    static List<String> getPaths() {
+//        return DataHandler.getPaths();
+//    }
+
+    static String getLocalPath() {
+        return DataHandler.getLocalPath();
+    }
+
+    static String getFeedPath() {
+        return DataHandler.getFeedPath();
     }
 
     /**
@@ -61,6 +69,10 @@ public interface DataInterface {
 
     static void startDownload (String animeName) {
         DataHandler.startDownload(animeName);
+    }
+
+    static void deleteAnime (String name) {
+        DataHandler.deleteAnime(name);
     }
 
     static List<String> toStringListWithNumber (List<AnimeEntry> animeEntries) {

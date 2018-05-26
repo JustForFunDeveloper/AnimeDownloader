@@ -17,16 +17,24 @@ public class DataHandler {
 
     private static DBHandler dbHandler = new DBHandler();
 
-    protected static List<String> getPaths() {
+    protected static void loadPaths() {
         List<String> paths = dbHandler.readAllPaths();
         localPath = paths.get(0);
         feedPath = paths.get(1);
+    }
 
-        return paths;
+    protected static String getLocalPath() {
+        loadPaths();
+        return localPath;
+    }
+
+    protected static String getFeedPath() {
+        loadPaths();
+        return feedPath;
     }
 
     protected static List<String> getLocalAnimeNames() {
-        updateData();
+        updateLocalData();
         return animeNames;
     }
 
@@ -126,6 +134,10 @@ public class DataHandler {
         }
     }
 
+    protected static void deleteAnime(String name) {
+        FileHandler.deleteFiles(animeMap.get(name).getAnimeEntries());
+    }
+
     private static List<String> toStringList(List<AnimeEntry> animeEntries) {
         List<String> animeEntriesList = new ArrayList<>();
         for (AnimeEntry animeEntry : animeEntries) {
@@ -134,7 +146,7 @@ public class DataHandler {
         return animeEntriesList;
     }
 
-    private static void updateData() {
+    private static void updateLocalData() {
         if (localPath.isEmpty())
             return;
         FileHandler.readFolders(localPath);

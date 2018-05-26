@@ -1,26 +1,41 @@
 package tapsi.controller;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.SingleSelectionModel;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import tapsi.logic.*;
 
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 //TODO: Check ChoiceBoxFeed MUSTHAVE should add to download list!
 //TODO: Create a few more Filter Methods for the local implementation
+//TODO: Update doesn't update Anime when Anime wsa deleted before?
 
 public class MainController implements Initializable, ViewInterfaces.MainInterface {
 
@@ -110,6 +125,15 @@ public class MainController implements Initializable, ViewInterfaces.MainInterfa
         setupListViews();
         setUpChoiceBoxes();
         setUpTxtFields();
+
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5), new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                btnDownloadUpdate();
+            }
+        }));
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
     }
 
     @Override
@@ -149,20 +173,42 @@ public class MainController implements Initializable, ViewInterfaces.MainInterfa
 
     @FXML
     void btnAnimeShowInExplorerOnAction() {
-        if (localAnimeDisplayed != null) {
-            DataInterface.setAnimeData(localAnimeDisplayed);
+        int index = listViewAnime.getSelectionModel().getSelectedIndex();
+        String path = localAnimeDisplayed.getAnimeEntries().get(index).getFullPathName();
+        try {
+            Runtime.getRuntime().exec("explorer.exe /select, " + path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void btnAnimePlayOnAction() {
+        int index = listViewAnime.getSelectionModel().getSelectedIndex();
+        File file = new File(localAnimeDisplayed.getAnimeEntries().get(index).getFullPathName());
+        if (file.exists()) {
+            Desktop desktop = Desktop.getDesktop();
+            try {
+                desktop.open(file);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     @FXML
     void btnAnimeDeleteOnAction() {
-        //TODO: Implement Delete Action for all Entrys local
-        //TODO: Update local after timeout (Thread?)
+        DataInterface.deleteAnime(localAnimeDisplayed.getName());
+        btnUpdate();
     }
 
     @FXML
     void btnDownloadOnAction() {
-        List<String> localFeedList = DataInterface.getFeedAnimeNames();
+        btnDownload();
+    }
+
+    private void btnDownload() {
+        List<String> localFeedList = getFilteredList(chBoxFeedFilter.getSelectionModel().getSelectedItem(), DataInterface.getFeedAnimeNames());
         setListView(listViewFeed, localFeedList);
         listViewFeedListItems = FXCollections.observableArrayList(localFeedList);
         ObservableList<String> downloadItems = FXCollections.observableArrayList(DataInterface.getAutomaticDownloadFeeds());
@@ -174,7 +220,11 @@ public class MainController implements Initializable, ViewInterfaces.MainInterfa
 
     @FXML
     void btnUpdateOnAction() {
-        List<String> localAnimeList = DataInterface.getLocalAnimeNames();
+        btnUpdate();
+    }
+
+    private void btnUpdate() {
+        List<String> localAnimeList = getFilteredList(chBoxAnimeFilter.getSelectionModel().getSelectedItem(), DataInterface.getLocalAnimeNames());
         setListView(listViewAnimeList, localAnimeList);
         listViewAnimeListItems = FXCollections.observableArrayList(localAnimeList);
         lblListCount.setText(Integer.toString(listViewAnimeList.getItems().size()));
@@ -184,15 +234,20 @@ public class MainController implements Initializable, ViewInterfaces.MainInterfa
         setAnimeTab(listViewAnimeListItems.get(0));
         listViewAnimeList.getSelectionModel().select(listViewAnimeListItems.get(0));
         listViewAnimeList.scrollTo(listViewAnimeListItems.get(0));
+
     }
 
     @FXML
     void btnDownloadUpdateOnAction() {
-        List<String> localFeedList = DataInterface.getFeedAnimeNames();
+        btnDownloadUpdate();
+    }
+
+    private void btnDownloadUpdate() {
+        List<String> localFeedList = getFilteredList(chBoxFeedFilter.getSelectionModel().getSelectedItem(), DataInterface.getFeedAnimeNames());
         setListView(listViewFeed, localFeedList);
         listViewFeedListItems = FXCollections.observableArrayList(localFeedList);
 
-        List<String> localAnimeList = DataInterface.getLocalAnimeNames();
+        List<String> localAnimeList = getFilteredList(chBoxAnimeFilter.getSelectionModel().getSelectedItem(), DataInterface.getLocalAnimeNames());
         setListView(listViewAnimeList, localAnimeList);
         listViewAnimeListItems = FXCollections.observableArrayList(localAnimeList);
         lblListCount.setText(Integer.toString(listViewAnimeList.getItems().size()));
@@ -383,6 +438,7 @@ public class MainController implements Initializable, ViewInterfaces.MainInterfa
 
         if (event.getButton().equals(MouseButton.PRIMARY)) {
             setAnimeTab(listView.getSelectionModel().getSelectedItem());
+            listViewAnime.getSelectionModel().select(0);
             if(listViewDownloads.getItems().contains(listView.getSelectionModel().getSelectedItem())) {
                 listViewDownloads.getSelectionModel().select(listView.getSelectionModel().getSelectedItem());
                 listViewDownloads.scrollTo(listView.getSelectionModel().getSelectedItem());
