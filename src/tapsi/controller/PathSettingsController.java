@@ -29,7 +29,7 @@ public class PathSettingsController implements Initializable, ViewInterfaces.Pat
     public void initialize(URL location, ResourceBundle resources) {
         ViewObserver.addPathSettingsListener(this);
         txtFieldLocalPath.setText(DataInterface.getLocalPath());
-        txtFieldFeedPath.setText(DataInterface.getLocalPath());
+        txtFieldFeedPath.setText(DataInterface.getFeedPath());
     }
 
     @Override
