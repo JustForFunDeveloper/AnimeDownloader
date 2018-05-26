@@ -22,6 +22,8 @@
           <Menu mnemonicParsing="false" text="Settings">
             <items>
               <MenuItem mnemonicParsing="false" onAction="#menuSettingsPathsOnAction" text="Paths Settings" />
+                  <MenuItem mnemonicParsing="false" onAction="#menuAutoStartOnAction" text="Start Auto-Download" />
+                  <MenuItem mnemonicParsing="false" onAction="#menuAutoStopOnAction" text="Stop Auto-Download" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Help">

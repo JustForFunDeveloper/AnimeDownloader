@@ -11,7 +11,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.Label;
-import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -19,24 +18,22 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import tapsi.logic.*;
 
-import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-//TODO: Check ChoiceBoxFeed MUSTHAVE should add to download list!
-//TODO: Create a few more Filter Methods for the local implementation
-//TODO: Update doesn't update Anime when Anime wsa deleted before?
+//TODO: Create a few more filter methods for the local implementation
 //TODO: Implement multiple location paths!
+//TODO: Setup Menu for "Auto-Download Timer" values and safe them in the DB
+//TODO: Safe date of downloads (implement Filter: "Recent" downloaded episodes -> filter by time)
+//TODO: Reposition the Tab changing event - should be in click handler and not in update method
+//TODO: Implement copy paste method in lists for the anime names
 
 public class MainController implements Initializable, ViewInterfaces.MainInterface {
 
@@ -114,7 +111,10 @@ public class MainController implements Initializable, ViewInterfaces.MainInterfa
     private Anime localFeedAnime;
     private AnimeEntry localFeedEntry;
 
-    public void setStage (Stage stage) {
+    private Timeline updateTimer;
+    private Timeline downloadTimer;
+
+    public void setStage(Stage stage) {
         this.stage = stage;
     }
 
@@ -126,15 +126,7 @@ public class MainController implements Initializable, ViewInterfaces.MainInterfa
         setupListViews();
         setUpChoiceBoxes();
         setUpTxtFields();
-
-        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5), new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                btnDownloadUpdate();
-            }
-        }));
-        timeline.setCycleCount(Timeline.INDEFINITE);
-        timeline.play();
+        setUpTimer();
     }
 
     @Override
@@ -264,6 +256,7 @@ public class MainController implements Initializable, ViewInterfaces.MainInterfa
 
     @FXML
     void btnStartDownloadOnAction() {
+        System.out.println("got here");
         for (String animeName : listViewDownloads.getItems()) {
             DataInterface.startDownload(animeName);
         }
@@ -280,8 +273,41 @@ public class MainController implements Initializable, ViewInterfaces.MainInterfa
     }
 
     @FXML
+    void menuAutoStartOnAction() {
+        updateTimer.play();
+        downloadTimer.play();
+        lblStatus.setText("Timer ON");
+    }
+
+    @FXML
+    void menuAutoStopOnAction() {
+        updateTimer.stop();
+        downloadTimer.stop();
+        lblStatus.setText("Timer OFF");
+    }
+
+    @FXML
     void menuHelpAboutOnAction() {
 
+    }
+
+
+    private void setUpTimer() {
+        updateTimer = new Timeline(new KeyFrame(Duration.seconds(5), new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                btnDownloadUpdate();
+            }
+        }));
+        updateTimer.setCycleCount(Timeline.INDEFINITE);
+
+        downloadTimer = new Timeline(new KeyFrame(Duration.minutes(30), new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                btnStartDownloadOnAction();
+            }
+        }));
+        downloadTimer.setCycleCount(Timeline.INDEFINITE);
     }
 
     /**
@@ -416,7 +442,7 @@ public class MainController implements Initializable, ViewInterfaces.MainInterfa
         listView.setItems(listViewItems);
     }
 
-    private void handleDownloadListMouseClick (MouseEvent event) {
+    private void handleDownloadListMouseClick(MouseEvent event) {
         ListView<String> listView = (ListView<String>) event.getSource();
 
         if (event.getButton().equals(MouseButton.PRIMARY)) {
@@ -425,7 +451,7 @@ public class MainController implements Initializable, ViewInterfaces.MainInterfa
                 listViewFeed.getSelectionModel().select(listView.getSelectionModel().getSelectedItem());
                 listViewFeed.scrollTo(listView.getSelectionModel().getSelectedItem());
             }
-        }else if (event.getButton().equals(MouseButton.SECONDARY)) {
+        } else if (event.getButton().equals(MouseButton.SECONDARY)) {
             setAnimeTab(listView.getSelectionModel().getSelectedItem());
             if (listViewAnimeList.getItems().contains(listView.getSelectionModel().getSelectedItem())) {
                 listViewAnimeList.getSelectionModel().select(listView.getSelectionModel().getSelectedItem());
@@ -440,7 +466,7 @@ public class MainController implements Initializable, ViewInterfaces.MainInterfa
         if (event.getButton().equals(MouseButton.PRIMARY)) {
             setAnimeTab(listView.getSelectionModel().getSelectedItem());
             listViewAnime.getSelectionModel().select(0);
-            if(listViewDownloads.getItems().contains(listView.getSelectionModel().getSelectedItem())) {
+            if (listViewDownloads.getItems().contains(listView.getSelectionModel().getSelectedItem())) {
                 listViewDownloads.getSelectionModel().select(listView.getSelectionModel().getSelectedItem());
                 listViewDownloads.scrollTo(listView.getSelectionModel().getSelectedItem());
             }
@@ -452,7 +478,7 @@ public class MainController implements Initializable, ViewInterfaces.MainInterfa
 
         if (event.getButton().equals(MouseButton.PRIMARY)) {
             setFeedTab(listView.getSelectionModel().getSelectedItem());
-            if(listViewDownloads.getItems().contains(listView.getSelectionModel().getSelectedItem())) {
+            if (listViewDownloads.getItems().contains(listView.getSelectionModel().getSelectedItem())) {
                 listViewDownloads.getSelectionModel().select(listView.getSelectionModel().getSelectedItem());
                 listViewDownloads.scrollTo(listView.getSelectionModel().getSelectedItem());
             }
@@ -467,16 +493,19 @@ public class MainController implements Initializable, ViewInterfaces.MainInterfa
         lblAnimeEpisodes.setText(Integer.toString(listEpisodes.size()));
         lblAnimeStatus.setText(localAnimeDisplayed.getAnimeStatus().toString());
 
-        if (localAnimeDisplayed.getSeasonCount() != null)
+        if (localAnimeDisplayed.getSeasonCount() != null) {
             txtFieldAnimeSeason.setText(Integer.toString(localAnimeDisplayed.getSeasonCount()));
+            Integer localEpisodes = Integer.valueOf(lblAnimeEpisodes.getText());
+            Integer missing = Integer.valueOf(localAnimeDisplayed.getSeasonCount()) - localEpisodes;
+            if (missing >= 0)
+                lblAnimeMissing.setText(String.valueOf(missing));
+        }
 
         chBoxAnimeScope.setValue(localAnimeDisplayed.getAnimeScope().toString());
 
         listViewAnime.setItems(listEpisodes);
         SingleSelectionModel<Tab> selectionModel = tabPane.getSelectionModel();
         selectionModel.select(1);
-
-        //TODO: Missing value not implemented yet
     }
 
     private void setFeedTab(String selectedFeed) {
@@ -499,7 +528,6 @@ public class MainController implements Initializable, ViewInterfaces.MainInterfa
             chBoxFeedScope.setValue(localFeedAnime.getAnimeScope().toString());
         }
         SingleSelectionModel<Tab> selectionModel = tabPane.getSelectionModel();
-        selectionModel.select(0);
     }
 
     private ObservableList<String> getFilteredList(String newValue, List<String> entries) {
