@@ -35,6 +35,8 @@ import java.util.stream.Stream;
 //TODO: Implement dynamic locationPaths in the view
 //TODO: Setup Menu for "Auto-Download Timer" values and safe them in the DB
 //TODO: Safe date of downloads (implement Filter: "Recent" downloaded episodes -> filter by time)
+//TODO: Sort the episode entries in all anime
+//TODO: Show path of the episode
 
 public class MainController implements Initializable, ViewInterfaces.MainInterface {
 
