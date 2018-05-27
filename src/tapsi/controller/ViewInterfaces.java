@@ -11,6 +11,6 @@ public interface ViewInterfaces {
     interface MainInterface {
         void hideStage();
         void showStage();
-        void btnOkFromPathSettingsClicked (String localPath, String feedPath);
+        void btnOkFromPathSettingsClicked (List<String> localPaths, String feedPath);
     }
 }

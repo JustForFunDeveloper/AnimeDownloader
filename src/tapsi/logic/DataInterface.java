@@ -7,12 +7,8 @@ import java.util.List;
  */
 public interface DataInterface {
 
-//    static List<String> getPaths() {
-//        return DataHandler.getPaths();
-//    }
-
-    static String getLocalPath() {
-        return DataHandler.getLocalPath();
+    static List<String> getLocalPaths() {
+        return DataHandler.getLocalPaths();
     }
 
     static String getFeedPath() {
@@ -55,7 +51,7 @@ public interface DataInterface {
         return DataHandler.getAutomaticDownloadFeeds();
     }
 
-    static void setPaths(String feedPath, String localPath) {
+    static void setPaths(String feedPath, List<String> localPath) {
         DataHandler.setPaths(feedPath, localPath);
     }
 

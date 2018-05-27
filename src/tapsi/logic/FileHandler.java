@@ -16,8 +16,6 @@ import java.util.Map;
 
 class FileHandler {
 
-    //private static String path = "D:\\Anime"; // "C:\\Users\\atapp\\Downloads\\Privat"; "\\\\192.168.1.113\\Anime2"; //"D:\\Anime";
-
     private static Map<String, Anime> animeMap;
     private static List<String> animeNames;
 
@@ -29,17 +27,19 @@ class FileHandler {
         return animeNames;
     }
 
-    protected static void readFolders (String path) {
+    protected static void readFolders (List<String> paths) {
         animeMap = new HashMap<>();
         animeNames = new ArrayList<>();
-        File folder = new File(path);
-        listFilesForFolder(folder, path);
+        for (String path : paths) {
+            File folder = new File(path);
+            listFilesForFolder(folder, path);
+        }
     }
 
     protected static void deleteFiles (List<AnimeEntry> animeEntries) {
         for (AnimeEntry entry : animeEntries) {
             try {
-                Path path = Paths.get(DataHandler.getLocalPath() + "\\" + entry.getFileName());
+                Path path = Paths.get(entry.getFullPathName());
                 Files.delete(path);
             } catch (IOException e) {
                 System.err.println("Couldn't find file or permission issue!");

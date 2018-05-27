@@ -9,6 +9,8 @@ import tapsi.logic.DataInterface;
 
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class PathSettingsController implements Initializable, ViewInterfaces.PathSettingsInterface {
@@ -19,6 +21,9 @@ public class PathSettingsController implements Initializable, ViewInterfaces.Pat
     @FXML
     private TextField txtFieldLocalPath;
 
+    @FXML
+    private TextField txtFieldLocalPath1;
+
     private Stage stage;
 
     public void setStage (Stage stage) {
@@ -28,7 +33,10 @@ public class PathSettingsController implements Initializable, ViewInterfaces.Pat
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         ViewObserver.addPathSettingsListener(this);
-        txtFieldLocalPath.setText(DataInterface.getLocalPath());
+        List<String> localPaths = DataInterface.getLocalPaths();
+        txtFieldLocalPath.setText(localPaths.get(0));
+        if (localPaths.size() > 1)
+            txtFieldLocalPath1.setText(localPaths.get(1));
         txtFieldFeedPath.setText(DataInterface.getFeedPath());
     }
 
@@ -54,7 +62,11 @@ public class PathSettingsController implements Initializable, ViewInterfaces.Pat
             return;
         }
 
-        ViewObserver.btnOkFromPathSettingsClicked(txtFieldLocalPath.getText(), txtFieldFeedPath.getText());
+        List<String> localPaths = new ArrayList<>();
+        localPaths.add(txtFieldLocalPath.getText());
+        if (!txtFieldLocalPath1.getText().isEmpty())
+            localPaths.add(txtFieldLocalPath1.getText());
+        ViewObserver.btnOkFromPathSettingsClicked(localPaths, txtFieldFeedPath.getText());
         stage.close();
     }
 
@@ -78,4 +90,3 @@ public class PathSettingsController implements Initializable, ViewInterfaces.Pat
         return urlValidator.isValid(link);
     }
 }
-

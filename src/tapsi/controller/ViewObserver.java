@@ -27,9 +27,9 @@ public class ViewObserver {
         }
     }
 
-    public static void btnOkFromPathSettingsClicked(String localPath, String feedPath) {
+    public static void btnOkFromPathSettingsClicked(List<String> localPaths, String feedPath) {
         for (ViewInterfaces.MainInterface mainInterface: mainListeners) {
-            mainInterface.btnOkFromPathSettingsClicked(localPath, feedPath);
+            mainInterface.btnOkFromPathSettingsClicked(localPaths, feedPath);
         }
     }
 

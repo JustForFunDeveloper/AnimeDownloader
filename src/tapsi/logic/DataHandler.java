@@ -7,8 +7,8 @@ import java.util.Map;
 
 public class DataHandler {
 
-    private static String feedPath = ""; // = "http://horriblesubs.info/rss.php?res=720";
-    private static String localPath = ""; // "D:\\Anime";
+    private static String feedPath = "";
+    private static List<String> localPaths;
 
     private static Map<String, Anime> animeMap = new HashMap<>();
     private static List<String> animeNames = new ArrayList<>();
@@ -19,13 +19,19 @@ public class DataHandler {
 
     protected static void loadPaths() {
         List<String> paths = dbHandler.readAllPaths();
-        localPath = paths.get(0);
-        feedPath = paths.get(1);
+        feedPath = paths.get(0);
+        localPaths = new ArrayList<>();
+        int iter = 0;
+        for (String path : paths) {
+            if (iter > 0)
+                localPaths.add(path);
+            iter++;
+        }
     }
 
-    protected static String getLocalPath() {
+    protected static List<String> getLocalPaths() {
         loadPaths();
-        return localPath;
+        return localPaths;
     }
 
     protected static String getFeedPath() {
@@ -78,11 +84,15 @@ public class DataHandler {
         return returnValue;
     }
 
-    protected static void setPaths(String feedPath, String localPath) {
-        DataHandler.localPath = localPath;
+    protected static void setPaths(String feedPath, List<String> localPaths) {
+        DataHandler.localPaths = new ArrayList<>(localPaths);
         DataHandler.feedPath = feedPath;
-        dbHandler.insertPath(0, localPath);
-        dbHandler.insertPath(1, feedPath);
+        dbHandler.insertPath(0, feedPath);
+        int iter = 1;
+        for (String paths : localPaths) {
+            dbHandler.insertPath(iter, paths);
+            iter++;
+        }
     }
 
     protected static void setAnimeData(Anime anime) {
@@ -147,9 +157,9 @@ public class DataHandler {
     }
 
     private static void updateLocalData() {
-        if (localPath.isEmpty())
+        if (localPaths.size() == 0)
             return;
-        FileHandler.readFolders(localPath);
+        FileHandler.readFolders(localPaths);
         animeMap = FileHandler.getAnimeMap();
         animeNames = FileHandler.getAnimeNames();
         syncDatabaseData();
