@@ -32,7 +32,7 @@ class FileHandler {
         animeNames = new ArrayList<>();
         for (String path : paths) {
             File folder = new File(path);
-            listFilesForFolder(folder, path);
+            listFilesForFolder(folder);
         }
     }
 
@@ -85,12 +85,12 @@ class FileHandler {
         return new Pair<>(name, number);
     }
 
-    private static void listFilesForFolder(File folder, String path) {
+    private static void listFilesForFolder(File folder) {
         for (File fileEntry : folder.listFiles()) {
             if (fileEntry.isDirectory()) {
-                listFilesForFolder(fileEntry, path);
+                listFilesForFolder(fileEntry);
             } else {
-                addEntry(fileEntry.getName(), path);
+                addEntry(fileEntry.getName(), fileEntry.getPath());
             }
         }
     }

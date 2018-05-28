@@ -63,7 +63,7 @@ public class AnimeEntry {
     }
 
     public String getFullPathName() {
-        return new String(path + "\\" + fileName);
+        return new String(path);
     }
 
     @Override
