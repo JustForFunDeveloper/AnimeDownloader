@@ -13,4 +13,4 @@ which are not in the local folder yet and have a SCOPE of "MUSTHAVE" they will b
 The Download works only if the magnet link is associated with the downloader and has permission to start the download right away.
 
 
-![Pictures](data:Pictures/AnimeDownloader.png)
+![https://raw.githubusercontent.com/CapitisDamnare/AnimeDownloader/master/Pictures/AnimeDownloader.png](https://raw.githubusercontent.com/CapitisDamnare/AnimeDownloader/master/Pictures/AnimeDownloader.png)
