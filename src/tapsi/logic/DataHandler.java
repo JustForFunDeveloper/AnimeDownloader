@@ -21,7 +21,7 @@ public class DataHandler {
         List<String> paths = dbHandler.readAllPaths();
         if (paths.size() == 0)
             return;
-        feedPath = paths.get(0);
+        feedPath = new String(paths.get(0));
         localPaths = new ArrayList<>();
         int iter = 0;
         for (String path : paths) {
