@@ -1,7 +1,7 @@
 <component name="libraryTable">
-  <library name="commons-validator-1.6">
+  <library name="junit-4.12">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/lib/commons-validator-1.6.jar!/" />
+      <root url="jar://$APPLICATION_HOME_DIR$/lib/junit-4.12.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
