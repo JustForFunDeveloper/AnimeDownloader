@@ -26,7 +26,7 @@ public class PathSettingsController implements Initializable, ViewInterfaces.Pat
 
     private Stage stage;
 
-    public void setStage (Stage stage) {
+    public void setStage(Stage stage) {
         this.stage = stage;
     }
 
@@ -34,7 +34,10 @@ public class PathSettingsController implements Initializable, ViewInterfaces.Pat
     public void initialize(URL location, ResourceBundle resources) {
         ViewObserver.addPathSettingsListener(this);
         List<String> localPaths = DataInterface.getLocalPaths();
-        txtFieldLocalPath.setText(localPaths.get(0));
+        if (localPaths == null)
+            return;
+        if (localPaths.size() > 0)
+            txtFieldLocalPath.setText(localPaths.get(0));
         if (localPaths.size() > 1)
             txtFieldLocalPath1.setText(localPaths.get(1));
         txtFieldFeedPath.setText(DataInterface.getFeedPath());

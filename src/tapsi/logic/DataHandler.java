@@ -19,6 +19,8 @@ public class DataHandler {
 
     protected static void loadPaths() {
         List<String> paths = dbHandler.readAllPaths();
+        if (paths.size() == 0)
+            return;
         feedPath = paths.get(0);
         localPaths = new ArrayList<>();
         int iter = 0;
