@@ -3,8 +3,7 @@ package tapsi.logic;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
-import javax.naming.Name;
+import tapsi.logic.handler.DataInterface;
 
 import static org.junit.jupiter.api.Assertions.*;
 

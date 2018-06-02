@@ -6,11 +6,7 @@ public abstract class AbstractController {
 
     private Stage stage;
 
-    public void setStage(Stage stage) {
+    public AbstractController(Stage stage) {
         this.stage = stage;
-    }
-
-    public Stage getStage() {
-        return stage;
     }
 }

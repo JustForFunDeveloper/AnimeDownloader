@@ -1,4 +1,4 @@
-package tapsi.views;
+package tapsi.controller.helper;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -7,17 +7,11 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import tapsi.Main;
 import tapsi.controller.AbstractController;
-import tapsi.controller.MainController;
 
 public class ViewBuilder {
 
     private Scene scene;
-    private Stage stage = null;
-
-    public ViewBuilder initializeScene(String fxmlPath, AbstractController controller) {
-        stage = new Stage();
-        return initializeScene(fxmlPath, controller, stage);
-    }
+    private Stage stage;
 
     public ViewBuilder initializeScene(String fxmlPath, AbstractController controller, Stage stage) {
         FXMLLoader loader;
@@ -33,7 +27,6 @@ public class ViewBuilder {
 
         scene = new Scene(parent);
         this.stage.setScene(scene);
-        controller.setStage(this.stage);
         return this;
     }
 
@@ -50,9 +43,5 @@ public class ViewBuilder {
     public ViewBuilder setIcon(String iconPath) {
         stage.getIcons().add(new Image(Main.class.getResourceAsStream(iconPath)));
         return this;
-    }
-
-    public Stage getStage() {
-        return stage;
     }
 }

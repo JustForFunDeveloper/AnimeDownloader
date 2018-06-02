@@ -1,4 +1,7 @@
-package tapsi.logic;
+package tapsi.logic.handler;
+
+import tapsi.logic.container.Anime;
+import tapsi.logic.container.AnimeEntry;
 
 import java.util.List;
 

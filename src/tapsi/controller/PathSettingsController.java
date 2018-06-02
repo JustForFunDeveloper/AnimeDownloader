@@ -5,7 +5,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.apache.commons.validator.routines.UrlValidator;
-import tapsi.logic.DataInterface;
+import tapsi.controller.helper.ViewInterfaces;
+import tapsi.controller.helper.ViewObserver;
+import tapsi.logic.handler.DataInterface;
 
 import java.io.File;
 import java.net.URL;
@@ -26,9 +28,14 @@ public class PathSettingsController extends AbstractController implements Initia
 
     private Stage stage;
 
+    public PathSettingsController(Stage stage) {
+        super(stage);
+        this.stage = stage;
+    }
+
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        this.stage = getStage();
         ViewObserver.addPathSettingsListener(this);
         List<String> localPaths = DataInterface.getLocalPaths();
         if (localPaths == null)

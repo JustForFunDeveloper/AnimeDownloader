@@ -1,22 +1,49 @@
-package tapsi.logic;
+package tapsi.logic.handler;
+
+import tapsi.logic.container.Anime;
+import tapsi.logic.container.AnimeEntry;
+import tapsi.logic.container.AnimeScope;
+import tapsi.logic.container.AnimeStatus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ *  The {@link DataHandler} class manages all data which was collected from the {@link FileHandler} and {@link FeedHandler}.
+ *  The class implements also the {@link DBHandler} and is only available through the {@link DataInterface}.
+ */
 public class DataHandler {
 
+    /**
+     * The {@link String} feedPath instance represents the stored path to the feed.
+     */
     private static String feedPath = "";
+    /**
+     * The {@link List<String>} localPaths instance represents all given local paths which holds anime.
+     */
     private static List<String> localPaths;
-
+    /**
+     * The {@link Map<String, Anime>} animeMap instance holds all {@link Anime} objects which where found in the given paths.
+     */
     private static Map<String, Anime> animeMap = new HashMap<>();
+    /**
+     * The {@link List<String>} animeNames instance holds all anime names.
+     */
     private static List<String> animeNames = new ArrayList<>();
-
+    /**
+     * The {@link List<AnimeEntry>} feedEntries instance holds all feed entries at the time.
+     */
     private static List<AnimeEntry> feedEntries = new ArrayList<>();
-
+    /**
+     * The {@link DBHandler} dbHandler instance to get and set entries to the database.
+     */
     private static DBHandler dbHandler = new DBHandler();
 
+    /**
+     * Gets the paths from the database if exists.
+     */
     protected static void loadPaths() {
         List<String> paths = dbHandler.readAllPaths();
         if (paths.size() == 0)
@@ -31,16 +58,28 @@ public class DataHandler {
         }
     }
 
+    /**
+     *
+     * @return the {@link String} local path
+     */
     protected static List<String> getLocalPaths() {
         loadPaths();
         return localPaths;
     }
 
+    /**
+     *
+     * @return the {@link String} feed path
+     */
     protected static String getFeedPath() {
         loadPaths();
         return feedPath;
     }
 
+    /**
+     *
+     * @return the {@link String} anime names
+     */
     protected static List<String> getLocalAnimeNames() {
         updateLocalData();
         return animeNames;

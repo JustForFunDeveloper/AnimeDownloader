@@ -1,10 +1,11 @@
-package tapsi.logic;
+package tapsi.logic.handler;
 
 import com.sun.istack.internal.NotNull;
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.SyndFeedInput;
 import com.sun.syndication.io.XmlReader;
 import javafx.util.Pair;
+import tapsi.logic.container.AnimeEntry;
 
 import java.awt.*;
 import java.net.*;

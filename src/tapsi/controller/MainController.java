@@ -19,7 +19,14 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import tapsi.logic.*;
+import tapsi.controller.helper.ViewFactory;
+import tapsi.controller.helper.ViewInterfaces;
+import tapsi.controller.helper.ViewObserver;
+import tapsi.logic.container.Anime;
+import tapsi.logic.container.AnimeEntry;
+import tapsi.logic.container.AnimeScope;
+import tapsi.logic.container.AnimeStatus;
+import tapsi.logic.handler.DataInterface;
 
 import java.awt.*;
 import java.io.File;
@@ -119,9 +126,14 @@ public class MainController extends AbstractController implements Initializable,
 
     private ContextMenu contextMenu;
 
+    public MainController(Stage stage) {
+        super(stage);
+        this.stage = stage;
+    }
+
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        this.stage = getStage();
         ViewObserver.addMainListener(this);
 
         setUpAnimeListFilter();
@@ -274,6 +286,7 @@ public class MainController extends AbstractController implements Initializable,
 
     @FXML
     void menuSettingsPathsOnAction() {
+        ViewFactory.initPathSettingsView();
         ViewObserver.showPathSettings();
     }
 

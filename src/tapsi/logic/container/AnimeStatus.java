@@ -1,4 +1,4 @@
-package tapsi.logic;
+package tapsi.logic.container;
 
 /**
  *  FINISHED: The season of the anime is finished and also all episode where downloaded

@@ -1,11 +1,12 @@
-package tapsi.logic;
+package tapsi.logic.handler;
 
 import com.sun.istack.internal.NotNull;
 import javafx.util.Pair;
+import tapsi.logic.container.Anime;
+import tapsi.logic.container.AnimeEntry;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;

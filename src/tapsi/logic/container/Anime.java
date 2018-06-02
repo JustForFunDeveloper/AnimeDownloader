@@ -1,4 +1,4 @@
-package tapsi.logic;
+package tapsi.logic.container;
 
 import com.sun.istack.internal.NotNull;
 
@@ -88,14 +88,14 @@ public class Anime {
         this.seasonCount = 0;
     }
 
-    protected void addAnimeEpisode (String number, String fileName, String localPath) {
+    public void addAnimeEpisode (String number, String fileName, String localPath) {
         AnimeEntry entry = new AnimeEntry();
         entry.addAnimeEntry(name, number, fileName, localPath);
         animeEntries.add(entry);
         updateLocalEpisodes();
     }
 
-    protected boolean containsAnimeEntryByFileName (String fileName) {
+    public boolean containsAnimeEntryByFileName (String fileName) {
         for (AnimeEntry animeEntry : animeEntries) {
             if (animeEntry.getFileName().equals(fileName))
                 return true;

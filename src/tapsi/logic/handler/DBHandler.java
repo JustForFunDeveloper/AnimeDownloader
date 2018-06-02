@@ -1,4 +1,8 @@
-package tapsi.logic;
+package tapsi.logic.handler;
+
+import tapsi.logic.container.Anime;
+import tapsi.logic.container.AnimeScope;
+import tapsi.logic.container.AnimeStatus;
 
 import java.sql.*;
 import java.util.ArrayList;

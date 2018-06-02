@@ -1,4 +1,4 @@
-package tapsi.logic;
+package tapsi.logic.container;
 
 /**
  * IGNORE: If the user doesn't need any updates on this anime

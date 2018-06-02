@@ -1,4 +1,4 @@
-package tapsi.logic;
+package tapsi.logic.container;
 
 public class AnimeEntry {
 
@@ -8,14 +8,14 @@ public class AnimeEntry {
     private String fileName;
     private String path;
 
-    protected void addNewAnimeEntry(String name, String number, String magnetUrl, String path) {
+    public void addNewAnimeEntry(String name, String number, String magnetUrl, String path) {
         this.name = name;
         this.number = number;
         this.magnetUrl = magnetUrl;
         this.path = path;
     }
 
-    protected void addAnimeEntry(String name, String number, String fileName, String path) {
+    public void addAnimeEntry(String name, String number, String fileName, String path) {
         this.name = name;
         this.number = number;
         this.fileName = fileName;
