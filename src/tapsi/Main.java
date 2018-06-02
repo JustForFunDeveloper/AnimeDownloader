@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import tapsi.controller.MainController;
 import tapsi.controller.PathSettingsController;
+import tapsi.views.ViewBuilder;
 import tapsi.controller.ViewObserver;
 import tapsi.logic.DataInterface;
 
@@ -24,18 +25,16 @@ public class Main extends Application {
     }
 
     private void initMainView(Stage primaryStage) throws Exception{
-        FXMLLoader mainLoader = new FXMLLoader(getClass().getResource("views/mainWindow.fxml"));
-        Parent root = mainLoader.load();
-        primaryStage.setTitle("Anime Downloader");
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add(Main.class.getResource("views/myStyle.css").toExternalForm());
-        primaryStage.setScene(scene);
-        primaryStage.getIcons().add(new Image(Main.class.getResourceAsStream("resources/icon.png")));
-        MainController mainController = mainLoader.getController();
-        mainController.setStage(primaryStage);
-        primaryStage.show();
+        ViewBuilder viewBuilder = new ViewBuilder();
+        MainController mainController = new MainController();
+        viewBuilder.initializeScene("mainWindow.fxml", mainController, primaryStage)
+                .setCSS("myStyle.css")
+                .setTitle("Anime Downloader")
+                .setIcon("resources/icon.png");
 
-        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+        Stage stage = viewBuilder.getStage();
+        stage.show();
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {
                 DataInterface.closeApplication();
@@ -44,15 +43,23 @@ public class Main extends Application {
     }
 
     private void initPathSettingsView() throws Exception{
-        FXMLLoader pathSettingsLoader = new FXMLLoader(getClass().getResource("views/pathSettings.fxml"));
-        Parent pathRoot = pathSettingsLoader.load();
-        Stage pathStage = new Stage();
-        Scene pathScene = new Scene(pathRoot);
-        pathScene.getStylesheets().add(Main.class.getResource("views/myStyle.css").toExternalForm());
-        pathStage.setScene(pathScene);
-        pathStage.getIcons().add(new Image(Main.class.getResourceAsStream("resources/icon.png")));
-        PathSettingsController pathSettingsController = pathSettingsLoader.getController();
-        pathSettingsController.setStage(pathStage);
+        ViewBuilder viewBuilder = new ViewBuilder();
+        PathSettingsController pathSettingsController = new PathSettingsController();
+        viewBuilder.initializeScene("pathSettings.fxml", pathSettingsController)
+                .setCSS("myStyle.css")
+                .setTitle("Anime Downloader")
+                .setIcon("resources/icon.png");
+//        FXMLLoader pathSettingsLoader = new FXMLLoader(getClass().getResource("views/pathSettings.fxml"));
+//        Parent pathRoot = pathSettingsLoader.load();
+//        Stage pathStage = new Stage();
+//        Scene pathScene = new Scene(pathRoot);
+//        pathScene.getStylesheets().add(Main.class.getResource("views/myStyle.css").toExternalForm());
+//        pathStage.setScene(pathScene);
+//        pathStage.getIcons().add(new Image(Main.class.getResourceAsStream("resources/icon.png")));
+//        PathSettingsController pathSettingsController = pathSettingsLoader.getController();
+//        pathSettingsController.setStage(pathStage);
+
+        Stage pathStage = viewBuilder.getStage();
         pathStage.setResizable(false);
         pathStage.initModality(Modality.APPLICATION_MODAL);
 

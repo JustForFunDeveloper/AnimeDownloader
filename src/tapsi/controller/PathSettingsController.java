@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class PathSettingsController implements Initializable, ViewInterfaces.PathSettingsInterface {
+public class PathSettingsController extends AbstractController implements Initializable, ViewInterfaces.PathSettingsInterface {
 
     @FXML
     private TextField txtFieldFeedPath;
@@ -26,12 +26,9 @@ public class PathSettingsController implements Initializable, ViewInterfaces.Pat
 
     private Stage stage;
 
-    public void setStage(Stage stage) {
-        this.stage = stage;
-    }
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        this.stage = getStage();
         ViewObserver.addPathSettingsListener(this);
         List<String> localPaths = DataInterface.getLocalPaths();
         if (localPaths == null)

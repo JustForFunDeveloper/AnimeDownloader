@@ -38,7 +38,7 @@ import java.util.stream.Stream;
 //TODO: Sort the episode entries in all anime
 //TODO: Show path of the episode
 
-public class MainController implements Initializable, ViewInterfaces.MainInterface {
+public class MainController extends AbstractController implements Initializable, ViewInterfaces.MainInterface {
 
     @FXML
     private ChoiceBox<String> chBoxFeedFilter;
@@ -119,12 +119,9 @@ public class MainController implements Initializable, ViewInterfaces.MainInterfa
 
     private ContextMenu contextMenu;
 
-    public void setStage(Stage stage) {
-        this.stage = stage;
-    }
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        this.stage = getStage();
         ViewObserver.addMainListener(this);
 
         setUpAnimeListFilter();
