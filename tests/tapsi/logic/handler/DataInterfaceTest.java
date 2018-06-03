@@ -1,4 +1,4 @@
-package tapsi.logic;
+package tapsi.logic.handler;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

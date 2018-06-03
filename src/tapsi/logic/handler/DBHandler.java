@@ -9,6 +9,14 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The {@link DBHandler} class handles all database related functions.<br />
+ * At the moment the db saves only the following information for the application: <br />
+ * <br />
+ * <strong>Table Anime:</strong> Name, {@link AnimeScope}, {@link AnimeStatus}<br />
+ * <strong>Table Paths:</strong> One FeedPath and multiple LocalPaths<br />
+ * <strong>Table Entries:</strong> Name, Episode, Date (Date since the Download happened through the application)<br />
+ */
 public class DBHandler {
 
     private String dbUrl = "jdbc:sqlite:my.db";
@@ -134,7 +142,7 @@ public class DBHandler {
 
         if (!checkName) {
             String sql = "insert into Entries(name, episode, date)" +
-                    " select '" + name + "', " + episode + "', " + date + "'";
+                    " select '" + name + "', " + episode + ", '" + date + "'";
             try {
                 stmt.executeUpdate(sql);
             } catch (SQLException e) {
@@ -265,9 +273,9 @@ public class DBHandler {
 
             while (rs.next()) {
                 List<String> line = new ArrayList<>();
-                line.add(rs.getString(1));
-                line.add(String.valueOf(rs.getInt(2)));
-                line.add(rs.getString(3));
+                line.add(rs.getString(2));
+                line.add(String.valueOf(rs.getInt(3)));
+                line.add(rs.getString(4));
                 entries.add(line);
             }
             rs.close();
@@ -279,12 +287,35 @@ public class DBHandler {
         }
     }
 
-    protected void closeDB() {
+    protected void deleteTable(String name) throws MyException{
+
+        String sql = "drop table " + name;
+        try {
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new MyException("Couldn't drop table: " + name);
+        }
+    }
+
+    protected void deleteAllEntriesFromTable(String name) throws MyException{
+
+        String sql = "delete from " + name;
+        try {
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new MyException("Couldn't empty table: " + name);
+        }
+    }
+
+    protected void closeDB() throws MyException{
         try {
             stmt.close();
             c.close();
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new MyException("Couldn't close DB");
         }
     }
 }

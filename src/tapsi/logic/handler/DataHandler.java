@@ -173,7 +173,11 @@ public class DataHandler {
     }
 
     protected static void closeApplication() {
-        dbHandler.closeDB();
+        try {
+            dbHandler.closeDB();
+        } catch (MyException e) {
+            e.printStackTrace();
+        }
     }
 
     protected static void syncDatabaseData() {
