@@ -60,6 +60,13 @@ class DBHandlerTest {
     }
 
     @Test
+    @DisplayName("Tests to delete a specific entry")
+    void deleteEntry () throws MyException {
+        dbHandler.insertEntry("name",1, calendar.getTime().toString());
+        dbHandler.deleteEntry("name", 1);
+    }
+
+    @Test
     @DisplayName("Deletes the table")
     void deleteTable() throws MyException{
         dbHandler.insertEntry("name", 1, testedTime);

@@ -155,6 +155,17 @@ public class DBHandler {
         }
     }
 
+    protected void deleteEntry (String name, Integer episode) throws MyException {
+
+        String sql = "delete from Entries where " + " name = '" + name + "' and episode = " + episode;
+        try {
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new MyException("Couldn't delete Entry: " + name + ", episode: " + episode);
+        }
+    }
+
     protected void updateEntry(String name, Integer episode, String date) throws MyException {
         String sqlName = "update Entries set date = '" + date + "' where name = '" + name + "' AND episode =" + episode ;
         try {

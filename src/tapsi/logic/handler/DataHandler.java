@@ -6,10 +6,7 @@ import tapsi.logic.container.AnimeEntry;
 import tapsi.logic.container.AnimeScope;
 import tapsi.logic.container.AnimeStatus;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  *  The {@link DataHandler} class manages all data which was collected from the {@link FileHandler} and {@link FeedHandler}.
@@ -154,14 +151,26 @@ public class DataHandler {
     }
 
     protected static void startDownload(String animeName) {
-        String magnetUrl = "";
+        AnimeEntry currentEntry = null;
 
         for (AnimeEntry entry : feedEntries) {
             if (entry.getName().equals(animeName))
-                magnetUrl = entry.getMagnetUrl();
+                currentEntry = entry;
         }
 
-        FeedHandler.openLink(magnetUrl);
+        if (currentEntry == null)
+            return;
+
+        FeedHandler.openLink(currentEntry.getMagnetUrl());
+        Locale locale = Locale.getDefault();
+        TimeZone timeZone = TimeZone.getDefault();
+        Calendar calendar = Calendar.getInstance(timeZone, locale);
+        try {
+            dbHandler.insertEntry(currentEntry.getName(), Integer.valueOf(currentEntry.getNumber()),
+                    calendar.getTime().toString());
+        } catch (MyException e) {
+            e.printStackTrace();
+        }
     }
 
     protected static List<String> toStringListWithNumber(List<AnimeEntry> animeEntries) {
