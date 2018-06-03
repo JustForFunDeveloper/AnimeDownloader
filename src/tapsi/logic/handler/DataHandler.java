@@ -1,5 +1,6 @@
 package tapsi.logic.handler;
 
+import tapsi.exception.MyException;
 import tapsi.logic.container.Anime;
 import tapsi.logic.container.AnimeEntry;
 import tapsi.logic.container.AnimeScope;
@@ -39,7 +40,15 @@ public class DataHandler {
     /**
      * The {@link DBHandler} dbHandler instance to get and set entries to the database.
      */
-    private static DBHandler dbHandler = new DBHandler();
+    private static DBHandler dbHandler;
+
+    static {
+        try {
+            dbHandler = new DBHandler();
+        } catch (MyException e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * Gets the paths from the database if exists.

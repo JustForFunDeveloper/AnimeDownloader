@@ -1,5 +1,6 @@
 package tapsi.logic.handler;
 
+import tapsi.exception.MyException;
 import tapsi.logic.container.Anime;
 import tapsi.logic.container.AnimeScope;
 import tapsi.logic.container.AnimeStatus;
@@ -14,7 +15,7 @@ public class DBHandler {
     private Connection c = null;
     private Statement stmt = null;
 
-    protected DBHandler() {
+    protected DBHandler() throws MyException {
 
         // Connect to database or create if no existent
         try {
@@ -22,8 +23,10 @@ public class DBHandler {
             c = DriverManager.getConnection(dbUrl);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+            throw new MyException("ClassNotFoundException");
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new MyException("SQLException");
         }
 
         // Create table if not existent
@@ -35,6 +38,7 @@ public class DBHandler {
             stmt.executeUpdate(sql);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new MyException("SQLException");
         }
 
         try {
@@ -45,6 +49,18 @@ public class DBHandler {
             stmt.executeUpdate(sql);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new MyException("SQLException");
+        }
+
+        try {
+            stmt = c.createStatement();
+            String sql = "create table if not exists Entries " +
+                    "(id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE, " +
+                    "name TEXT NOT NULL, episode INTEGER NOT NULL, date TEXT NOT NULL)";
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new MyException("SQLException");
         }
     }
 
@@ -62,7 +78,7 @@ public class DBHandler {
             }
         } else {
             // If insert is not possible just try tp update the client
-            updateClient(name, animeScope, animeStatus, seasonCount);
+            updateAnime(name, animeScope, animeStatus, seasonCount);
         }
     }
 
@@ -76,7 +92,7 @@ public class DBHandler {
         }
     }
 
-    protected void updateClient(String name, String animeScope, String animeStatus, int seasonCount) {
+    protected void updateAnime(String name, String animeScope, String animeStatus, int seasonCount) {
         String sqlName = "update Anime set animeScope = '" + animeScope + "', animeStatus = '" + animeStatus + "', seasonCount = " + seasonCount + " where name = '" + name + "'";
         try {
             stmt.executeUpdate(sqlName);
@@ -109,6 +125,35 @@ public class DBHandler {
             stmt.executeUpdate(sqlName);
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    protected void insertEntry(String name, Integer episode, String date) throws MyException {
+
+        boolean checkName = checkEntry(name, episode);
+
+        if (!checkName) {
+            String sql = "insert into Entries(name, episode, date)" +
+                    " select '" + name + "', " + episode + "', " + date + "'";
+            try {
+                stmt.executeUpdate(sql);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                throw new MyException("SQLException");
+            }
+        } else {
+            // If insert is not possible just try tp update the client
+            updateEntry(name, episode, date);
+        }
+    }
+
+    protected void updateEntry(String name, Integer episode, String date) throws MyException {
+        String sqlName = "update Entries set date = '" + date + "' where name = '" + name + "' AND episode =" + episode ;
+        try {
+            stmt.executeUpdate(sqlName);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new MyException("SQLException");
         }
     }
 
@@ -152,6 +197,26 @@ public class DBHandler {
         return false;
     }
 
+    protected boolean checkEntry(String name, Integer episode) throws MyException {
+        String sql = "select count(*) from Entries where name = '" + name + "' AND episode = " + episode;
+        try {
+            ResultSet rs = stmt.executeQuery(sql);
+            rs.next();
+            int result = rs.getInt(1);
+            rs.close();
+
+            if (result == 1)
+                return true;
+            else if (result != 0) {
+                System.out.println("Invalid Entry Database!");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new MyException("SQLException");
+        }
+        return false;
+    }
+
     protected List<Anime> readAllObjects() {
         List<Anime> animes = new ArrayList<>();
         String sql = "select * from Anime";
@@ -185,6 +250,28 @@ public class DBHandler {
             }
             rs.close();
             return paths;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    protected List<List<String>> readAllEntries() {
+        List<List<String>> entries = new ArrayList<>();
+        String sql = "select * from Entries";
+        try {
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                List<String> line = new ArrayList<>();
+                line.add(rs.getString(1));
+                line.add(String.valueOf(rs.getInt(2)));
+                line.add(rs.getString(3));
+                entries.add(line);
+            }
+            rs.close();
+            return entries;
 
         } catch (SQLException e) {
             e.printStackTrace();
