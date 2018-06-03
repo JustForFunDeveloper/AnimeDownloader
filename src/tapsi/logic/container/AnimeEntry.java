@@ -7,6 +7,7 @@ public class AnimeEntry {
     private String magnetUrl;
     private String fileName;
     private String path;
+    private String downloadDate = null;
 
     public void addNewAnimeEntry(String name, String number, String magnetUrl, String path) {
         this.name = name;
@@ -60,6 +61,14 @@ public class AnimeEntry {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public String getDownloadDate() {
+        return downloadDate;
+    }
+
+    public void setDownloadDate(String downloadDate) {
+        this.downloadDate = downloadDate;
     }
 
     public String getFullPathName() {

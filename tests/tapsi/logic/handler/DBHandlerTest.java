@@ -28,13 +28,13 @@ class DBHandlerTest {
     void insertEntry() throws MyException {
         dbHandler.deleteAllEntriesFromTable("Entries");
         testedTime = calendar.getTime().toString();
-        dbHandler.insertEntry("name", 1, testedTime);
+        dbHandler.insertEntry("name", "01", testedTime);
 
         List<List<String>> entries = dbHandler.readAllEntries();
         for (List<String> entry : entries) {
             List<String> compare = new ArrayList<>();
             compare.add("name");
-            compare.add(Integer.toString(1));
+            compare.add("01");
             compare.add(testedTime);
             assertArrayEquals(new List[]{compare}, new List[]{entry});
         }
@@ -44,15 +44,15 @@ class DBHandlerTest {
     @DisplayName("Update an entry, reads via readAllEntries and asserts it")
     void updateEntry() throws MyException {
         dbHandler.deleteAllEntriesFromTable("Entries");
-        dbHandler.insertEntry("name", 1, testedTime);
+        dbHandler.insertEntry("name", "01", testedTime);
         testedTime = calendar.getTime().toString();
-        dbHandler.updateEntry("name", 1, testedTime);
+        dbHandler.updateEntry("name", "01", testedTime);
 
         List<List<String>> entries = dbHandler.readAllEntries();
         for (List<String> entry : entries) {
             List<String> compare = new ArrayList<>();
             compare.add("name");
-            compare.add(Integer.toString(1));
+            compare.add("01");
             compare.add(testedTime);
             assertArrayEquals(new List[]{compare}, new List[]{entry});
         }
@@ -62,22 +62,22 @@ class DBHandlerTest {
     @Test
     @DisplayName("Tests to delete a specific entry")
     void deleteEntry () throws MyException {
-        dbHandler.insertEntry("name",1, calendar.getTime().toString());
-        dbHandler.deleteEntry("name", 1);
+        dbHandler.insertEntry("name","01", calendar.getTime().toString());
+        dbHandler.deleteEntry("name", "01");
     }
 
     @Test
     @DisplayName("Deletes the table")
     void deleteTable() throws MyException{
-        dbHandler.insertEntry("name", 1, testedTime);
+        dbHandler.insertEntry("name", "01", testedTime);
         dbHandler.deleteTable("Entries");
     }
 
     @Test
     @DisplayName("Deletes all Entries from the given table")
     void deleteAllEntriesFromTable() throws MyException{
-        dbHandler.insertEntry("name", 1, testedTime);
-        dbHandler.insertEntry("name", 1, testedTime);
+        dbHandler.insertEntry("name", "01", testedTime);
+        dbHandler.insertEntry("name", "01", testedTime);
         dbHandler.deleteAllEntriesFromTable("Entries");
     }
 

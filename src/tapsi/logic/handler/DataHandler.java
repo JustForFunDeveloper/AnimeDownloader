@@ -69,7 +69,6 @@ public class DataHandler {
      * @return the {@link String} local path
      */
     protected static List<String> getLocalPaths() {
-        loadPaths();
         return localPaths;
     }
 
@@ -78,7 +77,6 @@ public class DataHandler {
      * @return the {@link String} feed path
      */
     protected static String getFeedPath() {
-        loadPaths();
         return feedPath;
     }
 
@@ -92,8 +90,7 @@ public class DataHandler {
     }
 
     protected static List<String> getFeedAnimeNames() {
-        if (feedPath.isEmpty())
-            return null;
+        updateLocalData();
         List<AnimeEntry> animeEntries = FeedHandler.downloadFile(feedPath);
         DataHandler.feedEntries = new ArrayList<>(animeEntries);
         return toStringList(animeEntries);
@@ -162,12 +159,24 @@ public class DataHandler {
             return;
 
         FeedHandler.openLink(currentEntry.getMagnetUrl());
+
         Locale locale = Locale.getDefault();
         TimeZone timeZone = TimeZone.getDefault();
         Calendar calendar = Calendar.getInstance(timeZone, locale);
+        String currentDate = calendar.getTime().toString();
+
+        Anime localAnime = getAnimeByName(animeName);
+        if (localAnime != null) {
+            List<AnimeEntry> entries = localAnime.getAnimeEntries();
+
+            for (AnimeEntry entry: entries) {
+                if (entry.getNumber().equals(currentEntry.getNumber()))
+                    entry.setDownloadDate(currentDate);
+            }
+        }
+
         try {
-            dbHandler.insertEntry(currentEntry.getName(), Integer.valueOf(currentEntry.getNumber()),
-                    calendar.getTime().toString());
+            dbHandler.insertEntry(currentEntry.getName(),currentEntry.getNumber(), currentDate);
         } catch (MyException e) {
             e.printStackTrace();
         }
@@ -190,7 +199,7 @@ public class DataHandler {
     }
 
     protected static void syncDatabaseData() {
-        List<Anime> dbAnime = dbHandler.readAllObjects();
+        List<Anime> dbAnime = dbHandler.readAllAnime();
 
         if (dbAnime == null)
             return;
@@ -203,6 +212,29 @@ public class DataHandler {
                 localAnime.setSeasonCount(anime.getSeasonCount());
             } else {
                 dbHandler.deleteAnime(anime.getName());
+            }
+        }
+
+        List<List<String>> entries = dbHandler.readAllEntries();
+
+        if (entries == null)
+            return;
+
+        for (List<String> entry : entries) {
+            Anime localAnime = getAnimeByName(entry.get(0));
+            if (localAnime != null) {
+                List<AnimeEntry> animeEntries = localAnime.getAnimeEntries();
+                for (AnimeEntry animeEntry : animeEntries) {
+                    if (animeEntry.getNumber().equals(String.valueOf(entry.get(1)))) {
+                        animeEntry.setDownloadDate(entry.get(2));
+                    }
+                }
+            } else {
+                try {
+                    dbHandler.deleteEntry(entry.get(0), entry.get(1));
+                } catch (MyException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -220,8 +252,7 @@ public class DataHandler {
     }
 
     private static void updateLocalData() {
-        if (localPaths.size() == 0)
-            return;
+        loadPaths();
         FileHandler.readFolders(localPaths);
         animeMap = FileHandler.getAnimeMap();
         animeNames = FileHandler.getAnimeNames();

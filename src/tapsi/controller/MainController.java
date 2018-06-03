@@ -468,6 +468,21 @@ public class MainController extends AbstractController implements Initializable,
         contextMenu.show(listView, event.getScreenX(), event.getScreenY());
     }
 
+    private void setUpContextMenu(ListView<String> listView, MouseEvent event, AnimeEntry entry) {
+        contextMenu = new ContextMenu();
+        MenuItem menuItem = new MenuItem("Copy Name");
+        menuItem.setOnAction(ae -> copyName(listView));
+
+        MenuItem menuItem1;
+        if (entry.getDownloadDate() != null) {
+            menuItem1 = new MenuItem("Download date: " + entry.getDownloadDate());
+        } else {
+            menuItem1 = new MenuItem("Download date: No information");
+        }
+        contextMenu.getItems().addAll(menuItem, menuItem1);
+        contextMenu.show(listView, event.getScreenX(), event.getScreenY());
+    }
+
     private void copyName(ListView<String> listView) {
         final Clipboard clipboard = Clipboard.getSystemClipboard();
         final ClipboardContent content = new ClipboardContent();
@@ -545,7 +560,13 @@ public class MainController extends AbstractController implements Initializable,
             }
 
         } else if (event.getButton().equals(MouseButton.SECONDARY)) {
-            setUpContextMenu(listView, event);
+            List<AnimeEntry> entries = localAnimeDisplayed.getAnimeEntries();
+            AnimeEntry currentEntry = null;
+            for (AnimeEntry entry : entries) {
+                if (entry.getFileName().equals(listView.getSelectionModel().getSelectedItem()))
+                    currentEntry = entry;
+            }
+            setUpContextMenu(listView, event, currentEntry);
         }
     }
 
@@ -604,7 +625,6 @@ public class MainController extends AbstractController implements Initializable,
 
     private ObservableList<String> getFilteredList(String newValue, List<String> entries) {
         ObservableList<String> returnValue = FXCollections.observableArrayList();
-        //List<String> entries = DataInterface.getFeedAnimeNames();
 
         for (String animeName : entries) {
             Anime anime = DataInterface.getAnimeByName(animeName);

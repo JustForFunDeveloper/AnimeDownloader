@@ -64,7 +64,7 @@ public class DBHandler {
             stmt = c.createStatement();
             String sql = "create table if not exists Entries " +
                     "(id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE, " +
-                    "name TEXT NOT NULL, episode INTEGER NOT NULL, date TEXT NOT NULL)";
+                    "name TEXT NOT NULL, episode TEXT NOT NULL, date TEXT NOT NULL)";
             stmt.executeUpdate(sql);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -136,13 +136,13 @@ public class DBHandler {
         }
     }
 
-    protected void insertEntry(String name, Integer episode, String date) throws MyException {
+    protected void insertEntry(String name, String episode, String date) throws MyException {
 
         boolean checkName = checkEntry(name, episode);
 
         if (!checkName) {
             String sql = "insert into Entries(name, episode, date)" +
-                    " select '" + name + "', " + episode + ", '" + date + "'";
+                    " select '" + name + "', '" + episode + "', '" + date + "'";
             try {
                 stmt.executeUpdate(sql);
             } catch (SQLException e) {
@@ -155,9 +155,9 @@ public class DBHandler {
         }
     }
 
-    protected void deleteEntry (String name, Integer episode) throws MyException {
+    protected void deleteEntry (String name, String episode) throws MyException {
 
-        String sql = "delete from Entries where " + " name = '" + name + "' and episode = " + episode;
+        String sql = "delete from Entries where " + " name = '" + name + "' and episode = '" + episode + "'";
         try {
             stmt.executeUpdate(sql);
         } catch (SQLException e) {
@@ -166,8 +166,8 @@ public class DBHandler {
         }
     }
 
-    protected void updateEntry(String name, Integer episode, String date) throws MyException {
-        String sqlName = "update Entries set date = '" + date + "' where name = '" + name + "' AND episode =" + episode ;
+    protected void updateEntry(String name, String episode, String date) throws MyException {
+        String sqlName = "update Entries set date = '" + date + "' where name = '" + name + "' AND episode = '" + episode + "'" ;
         try {
             stmt.executeUpdate(sqlName);
         } catch (SQLException e) {
@@ -216,8 +216,8 @@ public class DBHandler {
         return false;
     }
 
-    protected boolean checkEntry(String name, Integer episode) throws MyException {
-        String sql = "select count(*) from Entries where name = '" + name + "' AND episode = " + episode;
+    protected boolean checkEntry(String name, String episode) throws MyException {
+        String sql = "select count(*) from Entries where name = '" + name + "' AND episode = '" + episode + "'";
         try {
             ResultSet rs = stmt.executeQuery(sql);
             rs.next();
@@ -236,7 +236,7 @@ public class DBHandler {
         return false;
     }
 
-    protected List<Anime> readAllObjects() {
+    protected List<Anime> readAllAnime() {
         List<Anime> animes = new ArrayList<>();
         String sql = "select * from Anime";
         try {
@@ -285,7 +285,7 @@ public class DBHandler {
             while (rs.next()) {
                 List<String> line = new ArrayList<>();
                 line.add(rs.getString(2));
-                line.add(String.valueOf(rs.getInt(3)));
+                line.add(rs.getString(3));
                 line.add(rs.getString(4));
                 entries.add(line);
             }
