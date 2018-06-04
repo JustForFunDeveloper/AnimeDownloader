@@ -622,53 +622,87 @@ public class MainController extends AbstractController implements Initializable,
         }
     }
 
+//    private ObservableList<String> getFilteredList(String newValue, List<String> entries) {
+//        ObservableList<String> returnValue = FXCollections.observableArrayList();
+//
+//        for (String animeName : entries) {
+//            Anime anime = DataInterface.getAnimeByName(animeName);
+//            if (anime != null) {
+//                switch (newValue) {
+//                    case "ALL":
+//                        returnValue.add(animeName);
+//                        break;
+//                    case "Scope IGNORE":
+//                        if (anime.getAnimeScope().equals(AnimeScope.valueOf("IGNORE")))
+//                            returnValue.add(animeName);
+//                        break;
+//                    case "Scope MUSTHAVE":
+//                        if (anime.getAnimeScope().equals(AnimeScope.valueOf("MUSTHAVE")))
+//                            returnValue.add(animeName);
+//                        break;
+//                    case "Scope NOTDEFINED":
+//                        if (anime.getAnimeScope().equals(AnimeScope.valueOf("NOTDEFINED")))
+//                            returnValue.add(animeName);
+//                        break;
+//                    case "Exists Local":
+//                        returnValue.add(animeName);
+//                        break;
+//                    case "Status ONAIR":
+//                        if (anime.getAnimeStatus().equals(AnimeStatus.valueOf("ONAIR")))
+//                            returnValue.add(animeName);
+//                        break;
+//                    case "Status UNFINISHED":
+//                        if (anime.getAnimeStatus().equals(AnimeStatus.valueOf("UNFINISHED")))
+//                            returnValue.add(animeName);
+//                        break;
+//                    case "Status INFOMISSING":
+//                        if (anime.getAnimeStatus().equals(AnimeStatus.valueOf("INFOMISSING")))
+//                            returnValue.add(animeName);
+//                        break;
+//                    case "Sort Date Newest":
+//                        return getSortedList(true);
+//                    case "Sort Date Oldest":
+//                        return getSortedList(false);
+//
+//                }
+//            } else if (newValue.equals("ALL"))
+//                returnValue.add(animeName);
+//        }
+//        return returnValue;
+//    }
+
     private ObservableList<String> getFilteredList(String newValue, List<String> entries) {
-        ObservableList<String> returnValue = FXCollections.observableArrayList();
+        ObservableList<Anime> list = FXCollections.observableArrayList(DataInterface.getAnimeMap().values());
 
-        for (String animeName : entries) {
-            Anime anime = DataInterface.getAnimeByName(animeName);
-            if (anime != null) {
-                switch (newValue) {
-                    case "ALL":
-                        returnValue.add(animeName);
-                        break;
-                    case "Scope IGNORE":
-                        if (anime.getAnimeScope().equals(AnimeScope.valueOf("IGNORE")))
-                            returnValue.add(animeName);
-                        break;
-                    case "Scope MUSTHAVE":
-                        if (anime.getAnimeScope().equals(AnimeScope.valueOf("MUSTHAVE")))
-                            returnValue.add(animeName);
-                        break;
-                    case "Scope NOTDEFINED":
-                        if (anime.getAnimeScope().equals(AnimeScope.valueOf("NOTDEFINED")))
-                            returnValue.add(animeName);
-                        break;
-                    case "Exists Local":
-                        returnValue.add(animeName);
-                        break;
-                    case "Status ONAIR":
-                        if (anime.getAnimeStatus().equals(AnimeStatus.valueOf("ONAIR")))
-                            returnValue.add(animeName);
-                        break;
-                    case "Status UNFINISHED":
-                        if (anime.getAnimeStatus().equals(AnimeStatus.valueOf("UNFINISHED")))
-                            returnValue.add(animeName);
-                        break;
-                    case "Status INFOMISSING":
-                        if (anime.getAnimeStatus().equals(AnimeStatus.valueOf("INFOMISSING")))
-                            returnValue.add(animeName);
-                        break;
-                    case "Sort Date Newest":
-                        return getSortedList(true);
-                    case "Sort Date Oldest":
-                        return getSortedList(false);
-
-                }
-            } else if (newValue.equals("ALL"))
-                returnValue.add(animeName);
+        switch (newValue) {
+            case "ALL":
+                return obsListOfAnimeToObsListOfStrings(list);
+            case "Scope IGNORE":
+                list.filtered(anime -> anime.getAnimeScope() == AnimeScope.IGNORE);
+                return obsListOfAnimeToObsListOfStrings(list);
+            case "Scope MUSTHAVE":
+                list.filtered(anime -> anime.getAnimeScope() == AnimeScope.MUSTHAVE);
+                return obsListOfAnimeToObsListOfStrings(list);
+            case "Scope NOTDEFINED":
+                list.filtered(anime -> anime.getAnimeScope() == AnimeScope.NOTDEFINED);
+                return obsListOfAnimeToObsListOfStrings(list);
+            case "Exists Local":
+                return obsListOfAnimeToObsListOfStrings(list);
+            case "Status ONAIR":
+                list.filtered(anime -> anime.getAnimeStatus() == AnimeStatus.ONAIR);
+                return obsListOfAnimeToObsListOfStrings(list);
+            case "Status UNFINISHED":
+                list.filtered(anime -> anime.getAnimeStatus() == AnimeStatus.UNFINISHED);
+                return obsListOfAnimeToObsListOfStrings(list);
+            case "Status INFOMISSING":
+                list.filtered(anime -> anime.getAnimeStatus() == AnimeStatus.INFOMISSING);
+                return obsListOfAnimeToObsListOfStrings(list);
+            case "Sort Date Newest":
+                return getSortedList(true);
+            case "Sort Date Oldest":
+                return getSortedList(false);
         }
-        return returnValue;
+        return obsListOfAnimeToObsListOfStrings(list);
     }
 
     private ObservableList<String> getSortedList(boolean newest) {
@@ -705,6 +739,15 @@ public class MainController extends AbstractController implements Initializable,
 
     private List<String> listOfAnimeToListOfString(List<Anime> animes) {
         List<String> returnList = new ArrayList<>();
+
+        for (Anime anime : animes) {
+            returnList.add(anime.getName());
+        }
+        return returnList;
+    }
+
+    private ObservableList<String> obsListOfAnimeToObsListOfStrings (ObservableList<Anime> animes) {
+        ObservableList<String> returnList = FXCollections.observableArrayList();
 
         for (Anime anime : animes) {
             returnList.add(anime.getName());
