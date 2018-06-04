@@ -176,7 +176,7 @@ public class DataHandler {
                 if (entry.getNumber().equals(currentEntry.getNumber())) {
                     entry.setDownloadDate(currentDate);
                     Calendar cal = Calendar.getInstance();
-                    SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", locale);
+                    SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.US);
                     try {
                         cal.setTime(sdf.parse(currentDate));
                     } catch (ParseException e) {
@@ -252,6 +252,27 @@ public class DataHandler {
                 for (AnimeEntry animeEntry : animeEntries) {
                     if (animeEntry.getNumber().equals(String.valueOf(entry.get(1)))) {
                         animeEntry.setDownloadDate(entry.get(2));
+                        Calendar cal = Calendar.getInstance();
+                        SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.US);
+                        try {
+                            cal.setTime(sdf.parse(entry.get(2)));
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+
+                        if (localAnime.getNewestEntry() == null)
+                            localAnime.setNewestEntry(cal);
+                        else {
+                            if (cal.after(localAnime.getNewestEntry())) ;
+                            localAnime.setNewestEntry(cal);
+                        }
+
+                        if (localAnime.getOldestEntry() == null)
+                            localAnime.setOldestEntry(cal);
+                        else {
+                            if (cal.before(localAnime.getOldestEntry()))
+                                localAnime.setOldestEntry(cal);
+                        }
                     }
                 }
             } else {

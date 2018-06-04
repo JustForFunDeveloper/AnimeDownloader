@@ -32,9 +32,6 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Time;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -418,7 +415,7 @@ public class MainController extends AbstractController implements Initializable,
 
         ObservableList<String> itemsFeedFilter = FXCollections.observableArrayList("ALL", "Scope IGNORE",
                 "Scope MUSTHAVE", "Scope NOTDEFINED", "Exists Local", "Status ONAIR", "Status UNFINISHED",
-                "Status INFOMISSING");
+                "Status INFOMISSING", "Sort Date Newest", "Sort Date Oldest");
 
         chBoxFeedFilter.setItems(itemsFeedFilter);
         chBoxFeedFilter.setValue(itemsFeedFilter.get(0));
@@ -483,7 +480,6 @@ public class MainController extends AbstractController implements Initializable,
         }
         contextMenu.getItems().addAll(menuItem, menuItem1);
         contextMenu.show(listView, event.getScreenX(), event.getScreenY());
-        System.out.println(localAnimeDisplayed.getNewestEntry() + " - " + localAnimeDisplayed.getOldestEntry());
     }
 
     private void copyName(ListView<String> listView) {
@@ -663,6 +659,11 @@ public class MainController extends AbstractController implements Initializable,
                         if (anime.getAnimeStatus().equals(AnimeStatus.valueOf("INFOMISSING")))
                             returnValue.add(animeName);
                         break;
+                    case "Sort Date Newest":
+                        return getSortedList(true);
+                    case "Sort Date Oldest":
+                        return getSortedList(false);
+
                 }
             } else if (newValue.equals("ALL"))
                 returnValue.add(animeName);
@@ -670,15 +671,44 @@ public class MainController extends AbstractController implements Initializable,
         return returnValue;
     }
 
-    private void sort() {
+    private ObservableList<String> getSortedList(boolean newest) {
+
         List<Anime> anime = new ArrayList<>(DataInterface.getAnimeMap().values());
 
         anime.sort(((o1, o2) -> {
             Anime anime1 = (Anime) o1;
             Anime anime2 = (Anime) o2;
-            return 0;
+
+            int inverse = -1;
+            if (newest)
+                inverse = 1;
+
+            if (anime1.getNewestEntry() == null && anime2.getNewestEntry() != null)
+                return 1;
+            if (anime1.getNewestEntry() != null && anime2.getNewestEntry() == null)
+                return -1;
+            if (anime1.getNewestEntry() == null && anime2.getNewestEntry() == null)
+                return 0;
+
+            if (anime1.getNewestEntry().after(anime2.getNewestEntry()))
+                return -1 * inverse;
+            else if (anime1.getNewestEntry().before(anime2.getNewestEntry()))
+                return 1 * inverse;
+            else
+                return 0;
 
         }));
 
+        ObservableList<String> returnValue = FXCollections.observableArrayList(listOfAnimeToListOfString(anime));
+        return returnValue;
+    }
+
+    private List<String> listOfAnimeToListOfString(List<Anime> animes) {
+        List<String> returnList = new ArrayList<>();
+
+        for (Anime anime : animes) {
+            returnList.add(anime.getName());
+        }
+        return returnList;
     }
 }
