@@ -6,11 +6,13 @@ import tapsi.logic.container.AnimeEntry;
 import tapsi.logic.container.AnimeScope;
 import tapsi.logic.container.AnimeStatus;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- *  The {@link DataHandler} class manages all data which was collected from the {@link FileHandler} and {@link FeedHandler}.
- *  The class implements also the {@link DBHandler} and is only available through the {@link DataInterface}.
+ * The {@link DataHandler} class manages all data which was collected from the {@link FileHandler} and {@link FeedHandler}.
+ * The class implements also the {@link DBHandler} and is only available through the {@link DataInterface}.
  */
 public class DataHandler {
 
@@ -65,7 +67,6 @@ public class DataHandler {
     }
 
     /**
-     *
      * @return the {@link String} local path
      */
     protected static List<String> getLocalPaths() {
@@ -73,15 +74,17 @@ public class DataHandler {
     }
 
     /**
-     *
      * @return the {@link String} feed path
      */
     protected static String getFeedPath() {
         return feedPath;
     }
 
+    public static Map<String, Anime> getAnimeMap() {
+        return animeMap;
+    }
+
     /**
-     *
      * @return the {@link String} anime names
      */
     protected static List<String> getLocalAnimeNames() {
@@ -169,14 +172,36 @@ public class DataHandler {
         if (localAnime != null) {
             List<AnimeEntry> entries = localAnime.getAnimeEntries();
 
-            for (AnimeEntry entry: entries) {
-                if (entry.getNumber().equals(currentEntry.getNumber()))
+            for (AnimeEntry entry : entries) {
+                if (entry.getNumber().equals(currentEntry.getNumber())) {
                     entry.setDownloadDate(currentDate);
+                    Calendar cal = Calendar.getInstance();
+                    SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", locale);
+                    try {
+                        cal.setTime(sdf.parse(currentDate));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (localAnime.getNewestEntry() == null)
+                        localAnime.setNewestEntry(cal);
+                    else {
+                        if (cal.after(localAnime.getNewestEntry())) ;
+                        localAnime.setNewestEntry(cal);
+                    }
+
+                    if (localAnime.getOldestEntry() == null)
+                        localAnime.setOldestEntry(cal);
+                    else {
+                        if (cal.before(localAnime.getOldestEntry()))
+                            localAnime.setOldestEntry(cal);
+                    }
+                }
             }
         }
 
         try {
-            dbHandler.insertEntry(currentEntry.getName(),currentEntry.getNumber(), currentDate);
+            dbHandler.insertEntry(currentEntry.getName(), currentEntry.getNumber(), currentDate);
         } catch (MyException e) {
             e.printStackTrace();
         }

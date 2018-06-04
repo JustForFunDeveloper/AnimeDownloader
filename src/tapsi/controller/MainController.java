@@ -32,9 +32,11 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
+import java.sql.Time;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -481,6 +483,7 @@ public class MainController extends AbstractController implements Initializable,
         }
         contextMenu.getItems().addAll(menuItem, menuItem1);
         contextMenu.show(listView, event.getScreenX(), event.getScreenY());
+        System.out.println(localAnimeDisplayed.getNewestEntry() + " - " + localAnimeDisplayed.getOldestEntry());
     }
 
     private void copyName(ListView<String> listView) {
@@ -665,5 +668,17 @@ public class MainController extends AbstractController implements Initializable,
                 returnValue.add(animeName);
         }
         return returnValue;
+    }
+
+    private void sort() {
+        List<Anime> anime = new ArrayList<>(DataInterface.getAnimeMap().values());
+
+        anime.sort(((o1, o2) -> {
+            Anime anime1 = (Anime) o1;
+            Anime anime2 = (Anime) o2;
+            return 0;
+
+        }));
+
     }
 }

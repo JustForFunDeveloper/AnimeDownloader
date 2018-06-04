@@ -3,6 +3,7 @@ package tapsi.logic.container;
 import com.sun.istack.internal.NotNull;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class Anime {
@@ -14,6 +15,8 @@ public class Anime {
 
     private AnimeScope animeScope;
     private AnimeStatus animeStatus;
+    private Calendar newestEntry = null;
+    private Calendar oldestEntry = null;
 
     public String getName() {
         return name;
@@ -37,6 +40,22 @@ public class Anime {
 
     public void setAnimeEntries(List<AnimeEntry> animeEntries) {
         this.animeEntries = animeEntries;
+    }
+
+    public Calendar getNewestEntry() {
+        return newestEntry;
+    }
+
+    public void setNewestEntry(Calendar newestEntry) {
+        this.newestEntry = newestEntry;
+    }
+
+    public Calendar getOldestEntry() {
+        return oldestEntry;
+    }
+
+    public void setOldestEntry(Calendar oldestEntry) {
+        this.oldestEntry = oldestEntry;
     }
 
     @NotNull

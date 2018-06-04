@@ -4,6 +4,7 @@ import tapsi.logic.container.Anime;
 import tapsi.logic.container.AnimeEntry;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * {@link DataInterface} handles all access from the views to the logic
@@ -16,6 +17,10 @@ public interface DataInterface {
 
     static String getFeedPath() {
         return DataHandler.getFeedPath();
+    }
+
+    static Map<String, Anime> getAnimeMap () {
+        return DataHandler.getAnimeMap();
     }
 
     /**
