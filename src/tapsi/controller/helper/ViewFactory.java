@@ -14,9 +14,9 @@ public class ViewFactory {
         ViewBuilder viewBuilder = new ViewBuilder();
         MainController mainController = new MainController(primaryStage);
         viewBuilder.initializeScene("/tapsi/views/mainWindow.fxml", mainController, primaryStage)
-                .setCSS("/tapsi//views/myStyle.css")
+                .setCSS("/tapsi/views/myStyle.css")
                 .setTitle("Anime Downloader")
-                .setIcon("/tapsi//resources/icon.png");
+                .setIcon("/tapsi/resources/icon.png");
 
         primaryStage.show();
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -31,10 +31,10 @@ public class ViewFactory {
         ViewBuilder viewBuilder = new ViewBuilder();
         Stage stage = new Stage();
         PathSettingsController pathSettingsController = new PathSettingsController(stage);
-        viewBuilder.initializeScene("/tapsi//views/pathSettings.fxml", pathSettingsController, stage)
+        viewBuilder.initializeScene("/tapsi/views/pathSettings.fxml", pathSettingsController, stage)
                 .setCSS("/tapsi/views/myStyle.css")
                 .setTitle("Anime Downloader")
-                .setIcon("/tapsi//resources/icon.png");
+                .setIcon("/tapsi/resources/icon.png");
 
         stage.setResizable(false);
         stage.initModality(Modality.APPLICATION_MODAL);
