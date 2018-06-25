@@ -41,6 +41,10 @@ public interface DataInterface {
         return DataHandler.getFeedAnimeNames();
     }
 
+    static List<String> getNewAnimeNames() {
+        return DataHandler.getNewAnimeNames();
+    }
+
     /**
      * Returns the Anime with the given anime
      *

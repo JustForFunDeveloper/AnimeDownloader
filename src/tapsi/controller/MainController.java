@@ -17,7 +17,9 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import javafx.util.Duration;
 import tapsi.controller.helper.ViewFactory;
 import tapsi.controller.helper.ViewInterfaces;
@@ -28,6 +30,7 @@ import tapsi.logic.container.AnimeScope;
 import tapsi.logic.container.AnimeStatus;
 import tapsi.logic.handler.DataInterface;
 
+import javax.xml.soap.Text;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -433,6 +436,13 @@ public class MainController extends AbstractController implements Initializable,
             }
         });
 
+        listViewFeed.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
+            @Override
+            public ListCell<String> call(ListView<String> param) {
+                return new FormatCell();
+            }
+        });
+
         chBoxFeedFilter.getSelectionModel().selectedItemProperty().addListener(changeListenerFeedFilter);
 
         ObservableList<String> itemsAnimeFilter = FXCollections.observableArrayList(itemsFeedFilter);
@@ -591,6 +601,7 @@ public class MainController extends AbstractController implements Initializable,
 
         chBoxAnimeScope.setValue(localAnimeDisplayed.getAnimeScope().toString());
 
+        FXCollections.sort(listEpisodes, Comparator.reverseOrder());
         listViewAnime.setItems(listEpisodes);
         if (focus) {
             SingleSelectionModel<Tab> selectionModel = tabPane.getSelectionModel();
@@ -754,5 +765,26 @@ public class MainController extends AbstractController implements Initializable,
             returnList.add(anime.getName());
         }
         return returnList;
+    }
+}
+
+class FormatCell extends ListCell<String> {
+    @Override
+    protected void updateItem(String item, boolean empty) {
+        super.updateItem(item, empty);
+
+        if (empty || item == null) {
+            setText(null);
+            setGraphic(null);
+        } else {
+            setText(item);
+            setStyle();
+        }
+
+        if (DataInterface.getNewAnimeNames().contains(item)) {
+            setTextFill(Color.GREEN);
+            setText("what");
+            System.out.println(item + ": green");
+        }
     }
 }
