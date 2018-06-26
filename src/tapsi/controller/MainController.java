@@ -30,7 +30,6 @@ import tapsi.logic.container.AnimeScope;
 import tapsi.logic.container.AnimeStatus;
 import tapsi.logic.handler.DataInterface;
 
-import javax.xml.soap.Text;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -43,7 +42,6 @@ import java.util.stream.Stream;
 //TODO: Create a few more filter methods for the local implementation
 //TODO: Implement dynamic locationPaths in the view
 //TODO: Setup Menu for "Auto-Download Timer" values and safe them in the DB
-//TODO: Sort the episode entries in all anime
 //TODO: Show path of the episode
 //TODO: Rework the filter and sort methods and create a class for this
 //TODO: Try to rework the MainController too.
@@ -439,7 +437,19 @@ public class MainController extends AbstractController implements Initializable,
         listViewFeed.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
             @Override
             public ListCell<String> call(ListView<String> param) {
-                return new FormatCell();
+                return new ListCell<String>() {
+                    @Override
+                    protected void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item != null && !empty) {
+                            setText(item);
+                            super.setStyle("-fx-text-fill: white");
+                            if (DataInterface.getNewAnimeNames().contains(item)) {
+                                super.setStyle("-fx-text-fill: green");
+                            }
+                        }
+                    }
+                };
             }
         });
 
@@ -765,26 +775,5 @@ public class MainController extends AbstractController implements Initializable,
             returnList.add(anime.getName());
         }
         return returnList;
-    }
-}
-
-class FormatCell extends ListCell<String> {
-    @Override
-    protected void updateItem(String item, boolean empty) {
-        super.updateItem(item, empty);
-
-        if (empty || item == null) {
-            setText(null);
-            setGraphic(null);
-        } else {
-            setText(item);
-            setStyle();
-        }
-
-        if (DataInterface.getNewAnimeNames().contains(item)) {
-            setTextFill(Color.GREEN);
-            setText("what");
-            System.out.println(item + ": green");
-        }
     }
 }

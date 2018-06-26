@@ -103,7 +103,7 @@ public class DataHandler {
         List<String> newAnimeNamesIndex = new ArrayList<>();
         for (AnimeEntry entry : DataHandler.feedEntries) {
             if (entry.getNumber().equals("0") ||
-                    entry.getNumber().equals("12")) {
+                    entry.getNumber().equals("1")) {
                 newAnimeNamesIndex.add(entry.getName());
             }
         }
