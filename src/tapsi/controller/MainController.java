@@ -196,8 +196,10 @@ public class MainController extends AbstractController implements Initializable,
     }
 
     private void playEpisode() {
-        int index = listViewAnime.getSelectionModel().getSelectedIndex();
-        File file = new File(localAnimeDisplayed.getAnimeEntries().get(index).getFullPathName());
+        AnimeEntry entry = localAnimeDisplayed.getAnimeEntryByFileName(listViewAnime.getSelectionModel().getSelectedItem());
+        if (entry == null)
+            return;
+        File file = new File(entry.getFullPathName());
         if (file.exists()) {
             Desktop desktop = Desktop.getDesktop();
             try {

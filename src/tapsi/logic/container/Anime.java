@@ -122,6 +122,14 @@ public class Anime {
         return false;
     }
 
+    public AnimeEntry getAnimeEntryByFileName (String fileName) {
+        for (AnimeEntry animeEntry : animeEntries) {
+            if (animeEntry.getFileName().equals(fileName))
+                return animeEntry;
+        }
+        return null;
+    }
+
     private void updateLocalEpisodes() {
         localEpisodes = animeEntries.size();
     }
