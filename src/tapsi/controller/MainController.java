@@ -501,7 +501,8 @@ public class MainController extends AbstractController implements Initializable,
         } else {
             menuItem1 = new MenuItem("Download date: No information");
         }
-        contextMenu.getItems().addAll(menuItem, menuItem1);
+        MenuItem menuItem2 = new MenuItem("Path: " + entry.getFullPathName());
+        contextMenu.getItems().addAll(menuItem, menuItem1, menuItem2);
         contextMenu.show(listView, event.getScreenX(), event.getScreenY());
     }
 

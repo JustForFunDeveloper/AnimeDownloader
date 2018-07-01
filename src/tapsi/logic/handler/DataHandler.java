@@ -161,11 +161,11 @@ public class DataHandler {
         animeMap.put(anime.getName(), anime);
     }
 
-    protected static void startDownload(String animeName) {
+    protected static void startDownload(String animeName, String number) {
         AnimeEntry currentEntry = null;
 
         for (AnimeEntry entry : feedEntries) {
-            if (entry.getName().equals(animeName))
+            if (entry.getName().equals(animeName) && entry.getNumber().equals(number))
                 currentEntry = entry;
         }
 

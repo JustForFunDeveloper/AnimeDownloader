@@ -75,8 +75,8 @@ public interface DataInterface {
         DataHandler.addTempAnime(anime);
     }
 
-    static void startDownload (String animeName) {
-        DataHandler.startDownload(animeName);
+    static void startDownload (String animeName, String number) {
+        DataHandler.startDownload(animeName, number);
     }
 
     static void deleteAnime (String name) {
