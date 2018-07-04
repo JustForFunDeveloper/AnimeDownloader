@@ -8,7 +8,8 @@ import javafx.util.Pair;
 import tapsi.logic.container.AnimeEntry;
 
 import java.awt.*;
-import java.net.*;
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,8 +17,6 @@ class FeedHandler {
 
     private static final String TITLE = "SyndEntryImpl.title";
     private static final String MAGNETURL = "SyndEntryImpl.link";
-
-    //private static String path = "http://horriblesubs.info/rss.php?res=720";
 
     protected static boolean openLink(String url) {
         URI uri = URI.create(url);
@@ -46,7 +45,7 @@ class FeedHandler {
             System.out.println("ERROR: " + ex.getMessage());
         }
 
-        if (feed.getEntries() != null && feed.getEntries().size() >0 ) {
+        if (feed.getEntries() != null && feed.getEntries().size() > 0) {
             entries = feed.getEntries();
         }
         return createAnimeListFromFeed(entries);
@@ -73,7 +72,7 @@ class FeedHandler {
     }
 
     @NotNull
-    private static Pair<Integer, Integer> getLineFromEntry (String signature, String entry) {
+    private static Pair<Integer, Integer> getLineFromEntry(String signature, String entry) {
         int start = entry.indexOf(signature);
         int end = start;
         int iter = entry.indexOf(signature);
@@ -93,11 +92,11 @@ class FeedHandler {
         String name = value.replace("SyndEntryImpl.title=[HorribleSubs] ", "");
         String number = name;
         name = name.replaceAll(" - [0-9][0-9]* \\[720p].mkv", "");
-        name = name.replaceAll("'","");
+        name = name.replaceAll("'", "");
         number = number.replace(name, "");
         number = number.replace("- ", "");
         number = number.replace("[720p].mkv", "");
-        number = number.replaceAll("\\s","");
+        number = number.replaceAll("\\s", "");
 
         return new Pair<>(name, number);
     }

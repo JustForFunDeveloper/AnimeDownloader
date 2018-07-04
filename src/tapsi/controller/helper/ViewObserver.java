@@ -16,19 +16,19 @@ public class ViewObserver {
     }
 
     public static void hideMain() {
-        for (ViewInterfaces.MainInterface mainInterface: mainListeners) {
+        for (ViewInterfaces.MainInterface mainInterface : mainListeners) {
             mainInterface.hideStage();
         }
     }
 
     public static void showMain() {
-        for (ViewInterfaces.MainInterface mainInterface: mainListeners) {
+        for (ViewInterfaces.MainInterface mainInterface : mainListeners) {
             mainInterface.showStage();
         }
     }
 
     public static void btnOkFromPathSettingsClicked(List<String> localPaths, String feedPath) {
-        for (ViewInterfaces.MainInterface mainInterface: mainListeners) {
+        for (ViewInterfaces.MainInterface mainInterface : mainListeners) {
             mainInterface.btnOkFromPathSettingsClicked(localPaths, feedPath);
         }
     }

@@ -28,7 +28,7 @@ class FileHandler {
         return animeNames;
     }
 
-    protected static void readFolders (List<String> paths) {
+    protected static void readFolders(List<String> paths) {
         animeMap = new HashMap<>();
         animeNames = new ArrayList<>();
         for (String path : paths) {
@@ -37,7 +37,7 @@ class FileHandler {
         }
     }
 
-    protected static void deleteFiles (List<AnimeEntry> animeEntries) {
+    protected static void deleteFiles(List<AnimeEntry> animeEntries) {
         for (AnimeEntry entry : animeEntries) {
             try {
                 Path path = Paths.get(entry.getFullPathName());
@@ -50,11 +50,11 @@ class FileHandler {
     }
 
     @NotNull
-    private static void addEntry (String name, String path) {
+    private static void addEntry(String name, String path) {
         Pair<String, String> value = safeNameNumberInList(name);
 
         if (animeMap.containsKey(value.getKey())) {
-            Anime anime= animeMap.get(value.getKey());
+            Anime anime = animeMap.get(value.getKey());
             if (!anime.containsAnimeEntryByFileName(name))
                 anime.addAnimeEpisode(value.getValue(), name, path);
         } else {
@@ -71,14 +71,14 @@ class FileHandler {
         String name = value.replace("[HorribleSubs] ", "");
         String number = name;
         name = name.replaceAll(" - [0-9]#*.* \\[[0-9]*p].mkv", "");
-        name = name.replaceAll("'","");
+        name = name.replaceAll("'", "");
         number = number.replace(name, "");
         number = number.replace("- ", "");
         number = number.replaceAll(" \\[[0-9]*p].mkv", "");
-        number = number.replaceAll("\\s","");
+        number = number.replaceAll("\\s", "");
 
         if (number.contains(".")) {
-            number = number.substring(0,number.indexOf("."));
+            number = number.substring(0, number.indexOf("."));
         } else if (number.contains("v")) {
             number = number.substring(0, number.indexOf("v"));
         }

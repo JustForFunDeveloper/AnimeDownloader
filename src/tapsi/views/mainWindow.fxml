@@ -107,13 +107,12 @@
                                        <children>
                                           <HBox prefHeight="100.0" prefWidth="200.0">
                                              <children>
-                                                <Label maxHeight="1.7976931348623157E308" text="Filter:" HBox.hgrow="ALWAYS">
+                                                <Label maxHeight="1.7976931348623157E308" HBox.hgrow="ALWAYS">
                                                    <font>
                                                       <Font name="System Bold" size="12.0" />
                                                    </font>
                                                 </Label>
                                                 <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
-                                                <ChoiceBox fx:id="chBoxFeedFilter" maxHeight="1.7976931348623157E308" minWidth="0.0" />
                                              </children>
                                           </HBox>
                                           <HBox prefHeight="100.0" prefWidth="200.0">

@@ -17,7 +17,6 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
@@ -34,22 +33,20 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 //TODO: Create a few more filter methods for the local implementation
 //TODO: Implement dynamic locationPaths in the view
 //TODO: Setup Menu for "Auto-Download Timer" values and safe them in the DB
-//TODO: Show path of the episode
 //TODO: Rework the filter and sort methods and create a class for this
 //TODO: Try to rework the MainController too.
 
 public class MainController extends AbstractController implements Initializable, ViewInterfaces.MainInterface {
-
-    @FXML
-    private ChoiceBox<String> chBoxFeedFilter;
 
     @FXML
     private ChoiceBox<String> chBoxAnimeFilter;
@@ -118,6 +115,7 @@ public class MainController extends AbstractController implements Initializable,
 
     private ObservableList<String> listViewAnimeListItems;
     private ObservableList<String> listViewFeedListItems;
+    private List<AnimeEntry> localFeedListEntries;
     private Anime localAnimeDisplayed;
     private Anime localFeedAnime;
     private AnimeEntry localFeedEntry;
@@ -169,7 +167,8 @@ public class MainController extends AbstractController implements Initializable,
             }
             localFeedAnime.setAnimeScope(AnimeScope.MUSTHAVE);
             DataInterface.setAnimeData(localFeedAnime);
-            setFeedTab(localFeedEntry.getName(), false);
+            setFeedTab(localFeedEntry, false);
+
         }
     }
 
@@ -222,12 +221,13 @@ public class MainController extends AbstractController implements Initializable,
     }
 
     private void btnDownload() {
-        List<String> localFeedList = getFilteredList(chBoxFeedFilter.getSelectionModel().getSelectedItem(), DataInterface.getFeedAnimeNames());
+        List<String> localFeedList = DataInterface.getFeedAnimeNames();
+        localFeedListEntries = DataInterface.getFeedEntries();
         setListView(listViewFeed, localFeedList);
         listViewFeedListItems = FXCollections.observableArrayList(localFeedList);
         ObservableList<String> downloadItems = FXCollections.observableArrayList(DataInterface.getAutomaticDownloadFeeds());
         listViewDownloads.setItems(downloadItems);
-        setFeedTab(listViewFeedListItems.get(0), false);
+        setFeedTab(localFeedListEntries.get(0), false);
         listViewFeed.getSelectionModel().select(listViewFeedListItems.get(0));
         listViewFeed.scrollTo(listViewFeedListItems.get(0));
     }
@@ -257,7 +257,8 @@ public class MainController extends AbstractController implements Initializable,
     }
 
     private void btnDownloadUpdate() {
-        List<String> localFeedList = getFilteredList(chBoxFeedFilter.getSelectionModel().getSelectedItem(), DataInterface.getFeedAnimeNames());
+        List<String> localFeedList = DataInterface.getFeedAnimeNames();
+        localFeedListEntries = DataInterface.getFeedEntries();
         setListView(listViewFeed, localFeedList);
         listViewFeedListItems = FXCollections.observableArrayList(localFeedList);
 
@@ -270,7 +271,7 @@ public class MainController extends AbstractController implements Initializable,
         ObservableList<String> downloadItems = FXCollections.observableArrayList(DataInterface.getAutomaticDownloadFeeds());
         listViewDownloads.setItems(downloadItems);
 
-        setFeedTab(listViewFeedListItems.get(0), false);
+        setFeedTab(localFeedListEntries.get(0), false);
         listViewFeed.getSelectionModel().select(listViewFeedListItems.get(0));
         listViewFeed.scrollTo(listViewFeedListItems.get(0));
     }
@@ -278,13 +279,14 @@ public class MainController extends AbstractController implements Initializable,
     @FXML
     void btnStartDownloadOnAction() {
         for (String animeName : listViewDownloads.getItems()) {
-            DataInterface.startDownload(animeName);
+            //DataInterface.startDownload(animeName);
         }
     }
 
     @FXML
     void menuFileCloseOnAction() {
         DataInterface.closeApplication();
+        stage.close();
     }
 
     @FXML
@@ -421,21 +423,6 @@ public class MainController extends AbstractController implements Initializable,
                 "Scope MUSTHAVE", "Scope NOTDEFINED", "Exists Local", "Status ONAIR", "Status UNFINISHED",
                 "Status INFOMISSING", "Sort Date Newest", "Sort Date Oldest");
 
-        chBoxFeedFilter.setItems(itemsFeedFilter);
-        chBoxFeedFilter.setValue(itemsFeedFilter.get(0));
-
-        ChangeListener changeListenerFeedFilter = ((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                ObservableList<String> list = getFilteredList(newValue.toString(), DataInterface.getFeedAnimeNames());
-                listViewFeed.setItems(list);
-                lblFeedEpisode.setText("-");
-                lblFeedExists.setText("-");
-                lblFeedStatus.setText("-");
-                lblFeedSeason.setText("-");
-                chBoxFeedScope.setValue("NOTDEFINED");
-            }
-        });
-
         listViewFeed.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
             @Override
             public ListCell<String> call(ListView<String> param) {
@@ -454,8 +441,6 @@ public class MainController extends AbstractController implements Initializable,
                 };
             }
         });
-
-        chBoxFeedFilter.getSelectionModel().selectedItemProperty().addListener(changeListenerFeedFilter);
 
         ObservableList<String> itemsAnimeFilter = FXCollections.observableArrayList(itemsFeedFilter);
         chBoxAnimeFilter.setItems(itemsAnimeFilter);
@@ -522,7 +507,7 @@ public class MainController extends AbstractController implements Initializable,
         ListView<String> listView = (ListView<String>) event.getSource();
 
         if (event.getButton().equals(MouseButton.PRIMARY)) {
-            setFeedTab(listView.getSelectionModel().getSelectedItem(), true);
+            setFeedTab(localFeedListEntries.get(listView.getSelectionModel().getSelectedIndex()), true);
             if (listViewFeed.getItems().contains(listView.getSelectionModel().getSelectedItem())) {
                 listViewFeed.getSelectionModel().select(listView.getSelectionModel().getSelectedItem());
                 listViewFeed.scrollTo(listView.getSelectionModel().getSelectedItem());
@@ -561,7 +546,7 @@ public class MainController extends AbstractController implements Initializable,
         ListView<String> listView = (ListView<String>) event.getSource();
 
         if (event.getButton().equals(MouseButton.PRIMARY)) {
-            setFeedTab(listView.getSelectionModel().getSelectedItem(), true);
+            setFeedTab(localFeedListEntries.get(listView.getSelectionModel().getSelectedIndex()), true);
             if (listViewDownloads.getItems().contains(listView.getSelectionModel().getSelectedItem())) {
                 listViewDownloads.getSelectionModel().select(listView.getSelectionModel().getSelectedItem());
                 listViewDownloads.scrollTo(listView.getSelectionModel().getSelectedItem());
@@ -593,7 +578,6 @@ public class MainController extends AbstractController implements Initializable,
         }
     }
 
-
     private void setAnimeTab(String selectedAnime, Boolean focus) {
         localAnimeDisplayed = DataInterface.getAnimeByName(selectedAnime);
         lblAnimeName.setText(localAnimeDisplayed.getName());
@@ -622,12 +606,12 @@ public class MainController extends AbstractController implements Initializable,
         }
     }
 
-    private void setFeedTab(String selectedFeed, Boolean focus) {
+    private void setFeedTab(AnimeEntry selectedFeed, Boolean focus) {
         if (selectedFeed == null)
             return;
 
-        localFeedEntry = DataInterface.getFeedEntryByName(selectedFeed);
-        localFeedAnime = DataInterface.getAnimeByName(selectedFeed);
+        localFeedEntry = DataInterface.getFeedEntryByNameAndNumber(selectedFeed.getName(), selectedFeed.getNumber());
+        localFeedAnime = DataInterface.getAnimeByName(selectedFeed.getName());
         if (localFeedAnime == null) {
             lblFeedExists.setText("false");
             lblFeedEpisode.setText(localFeedEntry.getNumber());
@@ -696,40 +680,6 @@ public class MainController extends AbstractController implements Initializable,
         return returnValue;
     }
 
-//    private ObservableList<String> getFilteredList(String newValue, List<String> entries) {
-//        ObservableList<Anime> list = FXCollections.observableArrayList(DataInterface.getAnimeMap().values());
-//
-//        switch (newValue) {
-//            case "ALL":
-//                return obsListOfAnimeToObsListOfStrings(list);
-//            case "Scope IGNORE":
-//                list.filtered(anime -> anime.getAnimeScope() == AnimeScope.IGNORE);
-//                return obsListOfAnimeToObsListOfStrings(list);
-//            case "Scope MUSTHAVE":
-//                list.filtered(anime -> anime.getAnimeScope() == AnimeScope.MUSTHAVE);
-//                return obsListOfAnimeToObsListOfStrings(list);
-//            case "Scope NOTDEFINED":
-//                list.filtered(anime -> anime.getAnimeScope() == AnimeScope.NOTDEFINED);
-//                return obsListOfAnimeToObsListOfStrings(list);
-//            case "Exists Local":
-//                return obsListOfAnimeToObsListOfStrings(list);
-//            case "Status ONAIR":
-//                list.filtered(anime -> anime.getAnimeStatus() == AnimeStatus.ONAIR);
-//                return obsListOfAnimeToObsListOfStrings(list);
-//            case "Status UNFINISHED":
-//                list.filtered(anime -> anime.getAnimeStatus() == AnimeStatus.UNFINISHED);
-//                return obsListOfAnimeToObsListOfStrings(list);
-//            case "Status INFOMISSING":
-//                list.filtered(anime -> anime.getAnimeStatus() == AnimeStatus.INFOMISSING);
-//                return obsListOfAnimeToObsListOfStrings(list);
-//            case "Sort Date Newest":
-//                return getSortedList(true);
-//            case "Sort Date Oldest":
-//                return getSortedList(false);
-//        }
-//        return obsListOfAnimeToObsListOfStrings(list);
-//    }
-
     private ObservableList<String> getSortedList(boolean newest) {
 
         List<Anime> anime = new ArrayList<>(DataInterface.getAnimeMap().values());
@@ -764,15 +714,6 @@ public class MainController extends AbstractController implements Initializable,
 
     private List<String> listOfAnimeToListOfString(List<Anime> animes) {
         List<String> returnList = new ArrayList<>();
-
-        for (Anime anime : animes) {
-            returnList.add(anime.getName());
-        }
-        return returnList;
-    }
-
-    private ObservableList<String> obsListOfAnimeToObsListOfStrings (ObservableList<Anime> animes) {
-        ObservableList<String> returnList = FXCollections.observableArrayList();
 
         for (Anime anime : animes) {
             returnList.add(anime.getName());

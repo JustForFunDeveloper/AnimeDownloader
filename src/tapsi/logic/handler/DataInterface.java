@@ -19,7 +19,7 @@ public interface DataInterface {
         return DataHandler.getFeedPath();
     }
 
-    static Map<String, Anime> getAnimeMap () {
+    static Map<String, Anime> getAnimeMap() {
         return DataHandler.getAnimeMap();
     }
 
@@ -41,6 +41,10 @@ public interface DataInterface {
         return DataHandler.getFeedAnimeNames();
     }
 
+    static List<AnimeEntry> getFeedEntries() {
+        return DataHandler.getFeedEntries();
+    }
+
     static List<String> getNewAnimeNames() {
         return DataHandler.getNewAnimeNames();
     }
@@ -49,17 +53,17 @@ public interface DataInterface {
      * Returns the Anime with the given anime
      *
      * @param anime Name of the anime
-     * @return (@Link Anime) returns the anime with the selected name
+     * @return (@ Link Anime) returns the anime with the selected name
      */
     static Anime getAnimeByName(String anime) {
         return DataHandler.getAnimeByName(anime);
     }
 
-    static AnimeEntry getFeedEntryByName (String entryName) {
-        return DataHandler.getFeedEntryByName(entryName);
+    static AnimeEntry getFeedEntryByNameAndNumber(String entryName, String number) {
+        return DataHandler.getFeedEntryByNameAndNumber(entryName, number);
     }
 
-    static List<String> getAutomaticDownloadFeeds () {
+    static List<String> getAutomaticDownloadFeeds() {
         return DataHandler.getAutomaticDownloadFeeds();
     }
 
@@ -67,27 +71,27 @@ public interface DataInterface {
         DataHandler.setPaths(feedPath, localPath);
     }
 
-    static void setAnimeData (Anime anime) {
+    static void setAnimeData(Anime anime) {
         DataHandler.setAnimeData(anime);
     }
 
-    static void addTempAnime (Anime anime) {
+    static void addTempAnime(Anime anime) {
         DataHandler.addTempAnime(anime);
     }
 
-    static void startDownload (String animeName, String number) {
+    static void startDownload(String animeName, String number) {
         DataHandler.startDownload(animeName, number);
     }
 
-    static void deleteAnime (String name) {
+    static void deleteAnime(String name) {
         DataHandler.deleteAnime(name);
     }
 
-    static List<String> toStringListWithNumber (List<AnimeEntry> animeEntries) {
+    static List<String> toStringListWithNumber(List<AnimeEntry> animeEntries) {
         return DataHandler.toStringListWithNumber(animeEntries);
     }
 
-    static void closeApplication () {
+    static void closeApplication() {
         DataHandler.closeApplication();
     }
 }

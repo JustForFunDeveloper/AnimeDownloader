@@ -99,11 +99,15 @@ public class DataHandler {
         return toStringList(animeEntries);
     }
 
+    protected static List<AnimeEntry> getFeedEntries() {
+        return feedEntries;
+    }
+
     protected static List<String> getNewAnimeNames() {
         List<String> newAnimeNamesIndex = new ArrayList<>();
         for (AnimeEntry entry : DataHandler.feedEntries) {
-            if (entry.getNumber().equals("0") ||
-                    entry.getNumber().equals("1")) {
+            if (entry.getNumber().equals("00") ||
+                    entry.getNumber().equals("01")) {
                 newAnimeNamesIndex.add(entry.getName());
             }
         }
@@ -114,9 +118,9 @@ public class DataHandler {
         return animeMap.get(anime);
     }
 
-    protected static AnimeEntry getFeedEntryByName(String entryName) {
+    protected static AnimeEntry getFeedEntryByNameAndNumber(String entryName, String number) {
         for (AnimeEntry entry : feedEntries) {
-            if (entry.getName().equals(entryName))
+            if (entry.getName().equals(entryName) && entry.getNumber().equals(number))
                 return entry;
         }
         return null;

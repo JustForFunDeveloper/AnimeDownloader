@@ -64,7 +64,7 @@ public class Anime {
     }
 
     public void setSeasonCount(Integer seasonCount) {
-        if(seasonCount.equals(0)) {
+        if (seasonCount.equals(0)) {
             this.seasonCount = null;
             animeStatus = AnimeStatus.INFOMISSING;
         }
@@ -107,14 +107,14 @@ public class Anime {
         this.seasonCount = 0;
     }
 
-    public void addAnimeEpisode (String number, String fileName, String localPath) {
+    public void addAnimeEpisode(String number, String fileName, String localPath) {
         AnimeEntry entry = new AnimeEntry();
         entry.addAnimeEntry(name, number, fileName, localPath);
         animeEntries.add(entry);
         updateLocalEpisodes();
     }
 
-    public boolean containsAnimeEntryByFileName (String fileName) {
+    public boolean containsAnimeEntryByFileName(String fileName) {
         for (AnimeEntry animeEntry : animeEntries) {
             if (animeEntry.getFileName().equals(fileName))
                 return true;
@@ -122,7 +122,7 @@ public class Anime {
         return false;
     }
 
-    public AnimeEntry getAnimeEntryByFileName (String fileName) {
+    public AnimeEntry getAnimeEntryByFileName(String fileName) {
         for (AnimeEntry animeEntry : animeEntries) {
             if (animeEntry.getFileName().equals(fileName))
                 return animeEntry;

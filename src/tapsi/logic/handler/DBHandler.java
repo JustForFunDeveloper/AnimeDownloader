@@ -128,7 +128,7 @@ public class DBHandler {
     }
 
     protected void updatePath(Integer id, String path) {
-        String sqlName = "update Paths set path = '" + path + "' where id = " + id ;
+        String sqlName = "update Paths set path = '" + path + "' where id = " + id;
         try {
             stmt.executeUpdate(sqlName);
         } catch (SQLException e) {
@@ -155,7 +155,7 @@ public class DBHandler {
         }
     }
 
-    protected void deleteEntry (String name, String episode) throws MyException {
+    protected void deleteEntry(String name, String episode) throws MyException {
 
         String sql = "delete from Entries where " + " name = '" + name + "' and episode = '" + episode + "'";
         try {
@@ -167,7 +167,7 @@ public class DBHandler {
     }
 
     protected void updateEntry(String name, String episode, String date) throws MyException {
-        String sqlName = "update Entries set date = '" + date + "' where name = '" + name + "' AND episode = '" + episode + "'" ;
+        String sqlName = "update Entries set date = '" + date + "' where name = '" + name + "' AND episode = '" + episode + "'";
         try {
             stmt.executeUpdate(sqlName);
         } catch (SQLException e) {
@@ -298,7 +298,7 @@ public class DBHandler {
         }
     }
 
-    protected void deleteTable(String name) throws MyException{
+    protected void deleteTable(String name) throws MyException {
 
         String sql = "drop table " + name;
         try {
@@ -309,7 +309,7 @@ public class DBHandler {
         }
     }
 
-    protected void deleteAllEntriesFromTable(String name) throws MyException{
+    protected void deleteAllEntriesFromTable(String name) throws MyException {
 
         String sql = "delete from " + name;
         try {
@@ -320,10 +320,12 @@ public class DBHandler {
         }
     }
 
-    protected void closeDB() throws MyException{
+    protected void closeDB() throws MyException {
         try {
-            stmt.close();
-            c.close();
+            if (stmt != null)
+                stmt.close();
+            if (c != null)
+                c.close();
         } catch (SQLException e) {
             e.printStackTrace();
             throw new MyException("Couldn't close DB");
