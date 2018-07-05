@@ -116,6 +116,7 @@ public class MainController extends AbstractController implements Initializable,
     private ObservableList<String> listViewAnimeListItems;
     private ObservableList<String> listViewFeedListItems;
     private List<AnimeEntry> localFeedListEntries;
+    private List<AnimeEntry> localDownloadlist;
     private Anime localAnimeDisplayed;
     private Anime localFeedAnime;
     private AnimeEntry localFeedEntry;
@@ -159,8 +160,9 @@ public class MainController extends AbstractController implements Initializable,
 
     @FXML
     void btnFeedAddOnAction() {
-        if (!listViewDownloads.getItems().contains(localFeedEntry.getName())) {
-            listViewDownloads.getItems().add(localFeedEntry.getName());
+        if (!listViewDownloads.getItems().contains(localFeedEntry.getName() + "#" + localFeedEntry.getNumber())) {
+            listViewDownloads.getItems().add(localFeedEntry.getName() + "#" + localFeedEntry.getNumber());
+            localDownloadlist.add(localFeedEntry);
             if (localFeedAnime == null) {
                 localFeedAnime = new Anime(localFeedEntry.getName());
                 DataInterface.addTempAnime(localFeedAnime);
@@ -174,8 +176,10 @@ public class MainController extends AbstractController implements Initializable,
 
     @FXML
     void btnFeedDeleteOnAction() {
-        if (listViewDownloads.getItems().contains(localFeedEntry.getName()))
-            listViewDownloads.getItems().remove(localFeedEntry.getName());
+        if (listViewDownloads.getItems().contains(localFeedEntry.getName() + "#" + localFeedEntry.getNumber())) {
+            listViewDownloads.getItems().remove(localFeedEntry.getName() + "#" + localFeedEntry.getNumber());
+            localDownloadlist.remove(localFeedEntry);
+        }
     }
 
     @FXML
@@ -225,7 +229,8 @@ public class MainController extends AbstractController implements Initializable,
         localFeedListEntries = DataInterface.getFeedEntries();
         setListView(listViewFeed, localFeedList);
         listViewFeedListItems = FXCollections.observableArrayList(localFeedList);
-        ObservableList<String> downloadItems = FXCollections.observableArrayList(DataInterface.getAutomaticDownloadFeeds());
+        localDownloadlist = FXCollections.observableArrayList(DataInterface.getAutomaticDownloadFeeds());
+        ObservableList<String> downloadItems = FXCollections.observableArrayList(listOfAnimeEntryToListOfString(localDownloadlist));
         listViewDownloads.setItems(downloadItems);
         setFeedTab(localFeedListEntries.get(0), false);
         listViewFeed.getSelectionModel().select(listViewFeedListItems.get(0));
@@ -243,7 +248,8 @@ public class MainController extends AbstractController implements Initializable,
         listViewAnimeListItems = FXCollections.observableArrayList(localAnimeList);
         lblListCount.setText(Integer.toString(listViewAnimeList.getItems().size()));
         txtFieldSearch.setText("");
-        ObservableList<String> downloadItems = FXCollections.observableArrayList(DataInterface.getAutomaticDownloadFeeds());
+        localDownloadlist = FXCollections.observableArrayList(DataInterface.getAutomaticDownloadFeeds());
+        ObservableList<String> downloadItems = FXCollections.observableArrayList(listOfAnimeEntryToListOfString(localDownloadlist));
         listViewDownloads.setItems(downloadItems);
         setAnimeTab(listViewAnimeListItems.get(0), false);
         listViewAnimeList.getSelectionModel().select(listViewAnimeListItems.get(0));
@@ -268,7 +274,8 @@ public class MainController extends AbstractController implements Initializable,
         lblListCount.setText(Integer.toString(listViewAnimeList.getItems().size()));
         txtFieldSearch.setText("");
 
-        ObservableList<String> downloadItems = FXCollections.observableArrayList(DataInterface.getAutomaticDownloadFeeds());
+        localDownloadlist = FXCollections.observableArrayList(DataInterface.getAutomaticDownloadFeeds());
+        ObservableList<String> downloadItems = FXCollections.observableArrayList(listOfAnimeEntryToListOfString(localDownloadlist));
         listViewDownloads.setItems(downloadItems);
 
         setFeedTab(localFeedListEntries.get(0), false);
@@ -278,8 +285,15 @@ public class MainController extends AbstractController implements Initializable,
 
     @FXML
     void btnStartDownloadOnAction() {
-        for (String animeName : listViewDownloads.getItems()) {
-            //DataInterface.startDownload(animeName);
+        for (String animeNameAndNumber : listViewDownloads.getItems()) {
+            for (AnimeEntry entry : localDownloadlist) {
+                String name = animeNameAndNumber.substring(0, animeNameAndNumber.indexOf("#"));
+                String number = animeNameAndNumber.substring(animeNameAndNumber.indexOf("#") + 1, animeNameAndNumber.length());
+                if (entry.getName().equals(name) && entry.getNumber().equals(number))
+                    DataInterface.startDownload(entry);
+                else
+                    System.out.println(entry.getName() + "-" + name + "\n" + entry.getNumber() + "-" + number);
+            }
         }
     }
 
@@ -504,6 +518,7 @@ public class MainController extends AbstractController implements Initializable,
     }
 
     private void handleDownloadListMouseClick(MouseEvent event) {
+        //TODO Rework this Handler... this doesnt work at all
         ListView<String> listView = (ListView<String>) event.getSource();
 
         if (event.getButton().equals(MouseButton.PRIMARY)) {
@@ -717,6 +732,15 @@ public class MainController extends AbstractController implements Initializable,
 
         for (Anime anime : animes) {
             returnList.add(anime.getName());
+        }
+        return returnList;
+    }
+
+    private List<String> listOfAnimeEntryToListOfString(List<AnimeEntry> animes) {
+        List<String> returnList = new ArrayList<>();
+
+        for (AnimeEntry entry : animes) {
+            returnList.add(entry.getName() + "#" + entry.getNumber());
         }
         return returnList;
     }

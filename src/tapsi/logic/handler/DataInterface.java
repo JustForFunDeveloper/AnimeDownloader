@@ -63,7 +63,7 @@ public interface DataInterface {
         return DataHandler.getFeedEntryByNameAndNumber(entryName, number);
     }
 
-    static List<String> getAutomaticDownloadFeeds() {
+    static List<AnimeEntry> getAutomaticDownloadFeeds() {
         return DataHandler.getAutomaticDownloadFeeds();
     }
 
@@ -79,8 +79,8 @@ public interface DataInterface {
         DataHandler.addTempAnime(anime);
     }
 
-    static void startDownload(String animeName, String number) {
-        DataHandler.startDownload(animeName, number);
+    static void startDownload(AnimeEntry downloadEntry) {
+        DataHandler.startDownload(downloadEntry);
     }
 
     static void deleteAnime(String name) {

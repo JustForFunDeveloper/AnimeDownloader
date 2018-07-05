@@ -126,8 +126,8 @@ public class DataHandler {
         return null;
     }
 
-    protected static List<String> getAutomaticDownloadFeeds() {
-        List<String> returnValue = new ArrayList<>();
+    protected static List<AnimeEntry> getAutomaticDownloadFeeds() {
+        List<AnimeEntry> returnValue = new ArrayList<>();
 
         for (AnimeEntry entry : feedEntries) {
             Anime anime = getAnimeByName(entry.getName());
@@ -139,7 +139,7 @@ public class DataHandler {
                             exists = true;
                     }
                     if (!exists)
-                        returnValue.add(entry.getName());
+                        returnValue.add(entry);
                 }
             }
         }
@@ -165,30 +165,23 @@ public class DataHandler {
         animeMap.put(anime.getName(), anime);
     }
 
-    protected static void startDownload(String animeName, String number) {
-        AnimeEntry currentEntry = null;
-
-        for (AnimeEntry entry : feedEntries) {
-            if (entry.getName().equals(animeName) && entry.getNumber().equals(number))
-                currentEntry = entry;
-        }
-
-        if (currentEntry == null)
+    protected static void startDownload(AnimeEntry downloadEntry) {
+        if (downloadEntry == null)
             return;
 
-        FeedHandler.openLink(currentEntry.getMagnetUrl());
+        FeedHandler.openLink(downloadEntry.getMagnetUrl());
 
         Locale locale = Locale.getDefault();
         TimeZone timeZone = TimeZone.getDefault();
         Calendar calendar = Calendar.getInstance(timeZone, locale);
         String currentDate = calendar.getTime().toString();
 
-        Anime localAnime = getAnimeByName(animeName);
+        Anime localAnime = getAnimeByName(downloadEntry.getName());
         if (localAnime != null) {
             List<AnimeEntry> entries = localAnime.getAnimeEntries();
 
             for (AnimeEntry entry : entries) {
-                if (entry.getNumber().equals(currentEntry.getNumber())) {
+                if (entry.getNumber().equals(downloadEntry.getNumber())) {
                     entry.setDownloadDate(currentDate);
                     Calendar cal = Calendar.getInstance();
                     SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.US);
@@ -216,7 +209,7 @@ public class DataHandler {
         }
 
         try {
-            dbHandler.insertEntry(currentEntry.getName(), currentEntry.getNumber(), currentDate);
+            dbHandler.insertEntry(downloadEntry.getName(), downloadEntry.getNumber(), currentDate);
         } catch (MyException e) {
             e.printStackTrace();
         }
