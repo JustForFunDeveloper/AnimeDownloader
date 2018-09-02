@@ -40,7 +40,6 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-//TODO: Create a few more filter methods for the local implementation
 //TODO: Implement dynamic locationPaths in the view
 //TODO: Setup Menu for "Auto-Download Timer" values and safe them in the DB
 //TODO: Rework the filter and sort methods and create a class for this
@@ -291,8 +290,6 @@ public class MainController extends AbstractController implements Initializable,
                 String number = animeNameAndNumber.substring(animeNameAndNumber.indexOf("#") + 1, animeNameAndNumber.length());
                 if (entry.getName().equals(name) && entry.getNumber().equals(number))
                     DataInterface.startDownload(entry);
-                else
-                    System.out.println(entry.getName() + "-" + name + "\n" + entry.getNumber() + "-" + number);
             }
         }
     }
@@ -518,20 +515,32 @@ public class MainController extends AbstractController implements Initializable,
     }
 
     private void handleDownloadListMouseClick(MouseEvent event) {
-        //TODO Rework this Handler... this doesnt work at all
         ListView<String> listView = (ListView<String>) event.getSource();
 
+        String animeNameAndNumber = listView.getSelectionModel().getSelectedItem();
+        String name = animeNameAndNumber.substring(0, animeNameAndNumber.indexOf("#"));
+        String number = animeNameAndNumber.substring(animeNameAndNumber.indexOf("#") + 1, animeNameAndNumber.length());
+
+        AnimeEntry animeEntry = null;
+        for (AnimeEntry entry : localFeedListEntries) {
+            if (entry.getName().equals(name) && entry.getNumber().equals(number))
+                animeEntry = entry;
+        }
+
+        if (animeEntry == null)
+            return;
+
         if (event.getButton().equals(MouseButton.PRIMARY)) {
-            setFeedTab(localFeedListEntries.get(listView.getSelectionModel().getSelectedIndex()), true);
-            if (listViewFeed.getItems().contains(listView.getSelectionModel().getSelectedItem())) {
-                listViewFeed.getSelectionModel().select(listView.getSelectionModel().getSelectedItem());
-                listViewFeed.scrollTo(listView.getSelectionModel().getSelectedItem());
+            if (listViewFeed.getItems().contains(animeEntry.getName())) {
+                setFeedTab(animeEntry, true);
+                listViewFeed.getSelectionModel().select(localFeedListEntries.indexOf(animeEntry));
+                listViewFeed.scrollTo(localFeedListEntries.indexOf(animeEntry));
             }
         } else if (event.getButton().equals(MouseButton.SECONDARY)) {
-            setAnimeTab(listView.getSelectionModel().getSelectedItem(), true);
-            if (listViewAnimeList.getItems().contains(listView.getSelectionModel().getSelectedItem())) {
-                listViewAnimeList.getSelectionModel().select(listView.getSelectionModel().getSelectedItem());
-                listViewAnimeList.scrollTo(listView.getSelectionModel().getSelectedItem());
+            if (listViewAnimeList.getItems().contains(animeEntry.getName())) {
+                setAnimeTab(animeEntry.getName(), true);
+                listViewAnimeList.getSelectionModel().select(animeEntry.getName());
+                listViewAnimeList.scrollTo(animeEntry.getName());
             }
         }
     }
