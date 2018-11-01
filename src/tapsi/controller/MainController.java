@@ -44,6 +44,7 @@ import java.util.stream.Stream;
 //TODO: Setup Menu for "Auto-Download Timer" values and safe them in the DB
 //TODO: Rework the filter and sort methods and create a class for this
 //TODO: Try to rework the MainController too.
+//TODO: Add Remove Button from download list!
 
 public class MainController extends AbstractController implements Initializable, ViewInterfaces.MainInterface {
 
